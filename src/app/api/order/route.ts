@@ -3,20 +3,17 @@ import crypto from 'crypto';
 
 /**
  * Apliiq-Specific Authentication Header Generator
- * Format: x-apliiq-auth RTS:SIG:APPID:STATE
  */
 function generateApliiqAuth(appId: string, secret: string, body: string = '') {
     const rts = Math.floor(Date.now() / 1000).toString();
     const state = crypto.randomBytes(8).toString('hex');
-    
-    // For Apliiq, the body must be Base64 encoded for the signature calculation
     const base64Body = body ? Buffer.from(body).toString('base64') : '';
     
     const payload = appId + rts + state + base64Body;
     const sig = crypto
         .createHmac('sha256', secret)
         .update(payload)
-        .digest('base64'); // Apliiq expects base64 signature
+        .digest('base64');
     
     return {
         header: `${rts}:${sig}:${appId}:${state}`,
@@ -25,38 +22,54 @@ function generateApliiqAuth(appId: string, secret: string, body: string = '') {
 }
 
 export async function POST(request: Request) {
-    const APLIIQ_APP_ID = process.env.APLIIQ_APP_ID || 'YOUR_APP_ID';
-    const APLIIQ_SECRET = process.env.APLIIQ_SECRET || 'YOUR_SECRET';
+    const APLIIQ_APP_ID = process.env.APLIIQ_APP_ID;
+    const APLIIQ_SECRET = process.env.APLIIQ_SECRET;
+    const APLIIQ_API_URL = 'https://devconnector.apliiq.com/v1/orders';
+
+    if (!APLIIQ_APP_ID || !APLIIQ_SECRET) {
+        return NextResponse.json({ 
+            status: 'error', 
+            message: 'Apliiq API credentials missing in environment.' 
+        }, { status: 500 });
+    }
 
     try {
-        const body = await request.json();
-        const bodyString = JSON.stringify(body);
+        const orderData = await request.json();
+        const bodyString = JSON.stringify(orderData);
         
-        // 1. Generate the complex Apliiq Auth Header
-        const { header, base64Body } = generateApliiqAuth(APLIIQ_APP_ID, APLIIQ_SECRET, bodyString);
+        // Generate the required Apliiq Auth Header
+        const { header } = generateApliiqAuth(APLIIQ_APP_ID, APLIIQ_SECRET, bodyString);
         
-        console.log('🚀 Order signed for Apliiq:', {
-            authHeader: header,
-            orderRef: body.order_number
+        console.log('🚀 Submitting Live Order to Apliiq Floor:', orderData.order_number);
+
+        // --- THE LIVE BRIDGE ---
+        const response = await fetch(APLIIQ_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-apliiq-auth': header
+            },
+            body: bodyString
         });
 
-        /* 
-        In Production, the flow would be:
-        1. Upload Artwork (if not exists)
-        2. Create Design (with Branding Services)
-        3. Submit Order with Design SKU
-        */
+        const result = await response.json();
 
+        if (response.ok) {
+            return NextResponse.json({ 
+                status: 'success', 
+                apliiq_ref: result.id,
+                tracking_id: 'AT-' + result.id,
+                message: 'Order accepted by Apliiq Manufacturing.'
+            });
+        } else {
+            throw new Error(result.message || 'Apliiq API rejection');
+        }
+
+    } catch (error: any) {
+        console.error('🔴 Fulfillment Error:', error.message);
         return NextResponse.json({ 
-            status: 'success', 
-            tracking_id: 'AT-AP-' + Math.floor(Math.random() * 1000000),
-            message: 'Order signed and ready for Apliiq Manufacturing Floor.',
-            debug: {
-                auth_header: header,
-                body_encoded: base64Body.substring(0, 20) + '...'
-            }
-        });
-    } catch (error) {
-        return NextResponse.json({ status: 'error', message: 'Failed to sign order' }, { status: 400 });
+            status: 'error', 
+            message: error.message 
+        }, { status: 500 });
     }
 }
