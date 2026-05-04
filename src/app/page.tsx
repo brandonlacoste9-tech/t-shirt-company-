@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { products, Product } from '@/data/products';
+import { Product } from '@/data/products';
 
 // i18n Data
 const translations: any = {
@@ -54,6 +54,7 @@ interface CartItem extends Product {
 export default function Home() {
     const router = useRouter();
     const [lang, setLang] = useState<'en' | 'fr'>('en');
+    const [products, setProducts] = useState<Product[]>([]);
     const [cart, setCart] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -65,6 +66,13 @@ export default function Home() {
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 50);
         window.addEventListener('scroll', handleScroll);
+        
+        // Dynamic Catalog Fetch
+        fetch('/api/products')
+            .then(res => res.json())
+            .then(data => setProducts(data))
+            .catch(err => console.error('Catalog fetch error:', err));
+
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 

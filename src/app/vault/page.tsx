@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { products } from '@/data/products';
+import { Product } from '@/data/products';
 
 const brandingOptions = [
     { id: 'none', title: 'None', price: 0, image: null },
@@ -13,9 +13,21 @@ const brandingOptions = [
 ];
 
 export default function DesignerVault() {
-    const [selectedProduct, setSelectedProduct] = useState(products[0]);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [activeBranding, setActiveBranding] = useState(brandingOptions[1]);
     const [zoomDetail, setZoomDetail] = useState(false);
+
+    useEffect(() => {
+        fetch('/api/products')
+            .then(res => res.json())
+            .then(data => {
+                setProducts(data);
+                if (data.length > 0) setSelectedProduct(data[0]);
+            });
+    }, []);
+
+    if (!selectedProduct) return <div className="min-h-screen bg-[#050507] flex items-center justify-center text-white font-['Outfit']">Syncing Vault with Apliiq...</div>;
 
     const totalPrice = selectedProduct.price + activeBranding.price;
 
