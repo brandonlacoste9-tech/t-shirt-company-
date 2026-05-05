@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { shopifyStorefrontFetch, getProductQuery } from '@/lib/shopify';
 
-export async function GET(request: Request, { params }: { params: { handle: string } }) {
-    const handle = params.handle;
+export async function GET(request: Request, { params }: { params: Promise<{ handle: string }> }) {
+    const { handle } = await params;
 
     try {
         const response = await shopifyStorefrontFetch({
