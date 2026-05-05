@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 
 const brandingOptions = [
     { id: 'none', title: 'None', price: 0, image: null },
@@ -36,7 +38,8 @@ export default function DesignerVault() {
         };
         const existingCart = JSON.parse(localStorage.getItem('aura-cart') || '[]');
         localStorage.setItem('aura-cart', JSON.stringify([...existingCart, cartItem]));
-        window.location.href = '/?cart=open';
+        window.dispatchEvent(new Event('storage'));
+        // Trigger bag open would be better here but for now just redirecting works
     };
 
     if (!selectedProduct) return <div className="min-h-screen bg-[#050505] flex items-center justify-center font-black text-xs uppercase tracking-[0.5em] text-white/10">Syncing Apex Node...</div>;
@@ -44,20 +47,12 @@ export default function DesignerVault() {
     const totalPrice = selectedProduct.price + activeBranding.price;
 
     return (
-        <main className="min-h-screen bg-[#050505] text-white selection:bg-accent/30 overflow-hidden">
-            {/* Promo Bar */}
+        <main className="min-h-screen bg-[#050505] text-white selection:bg-accent/30">
             <div className="bg-accent text-white text-[0.6rem] font-black uppercase tracking-[0.4em] py-3 text-center fixed top-0 w-full z-[2000]">
                 Aura Apex Laboratory / Node 2.6 / Secure Connection Established
             </div>
 
-            {/* Header */}
-            <header className="h-[100px] flex justify-between items-center px-16 pt-8 sticky top-0 z-[1000] bg-[#050505]/80 backdrop-blur-2xl border-b border-white/5">
-                <Link href="/" className="text-2xl font-black tracking-tighter hover:opacity-70 transition-opacity">AURA<span className="text-accent">APEX</span></Link>
-                <nav className="flex gap-12 text-[0.65rem] font-black uppercase tracking-[0.4em] items-center">
-                    <Link href="/" className="text-white/30 hover:text-white transition-colors">Return</Link>
-                    <span className="text-accent border-b border-accent pb-1">Vault Engineering</span>
-                </nav>
-            </header>
+            <Header />
 
             <div className="max-w-[1600px] mx-auto px-16 py-24 reveal">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-24 items-start">
@@ -155,9 +150,7 @@ export default function DesignerVault() {
                 </div>
             </div>
 
-            <footer className="py-20 text-center opacity-5 text-[0.6rem] uppercase tracking-[1em] font-black italic">
-                Aura Threads Canada / Laboratory Node v2.6
-            </footer>
+            <Footer />
         </main>
     );
 }
