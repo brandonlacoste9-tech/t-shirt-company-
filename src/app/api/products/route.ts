@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { shopifyStorefrontFetch, getProductsQuery } from '@/lib/shopify';
+import { shopifyAdminFetch, getAdminProductsQuery } from '@/lib/shopify';
 
 export async function GET() {
     try {
-        const response = await shopifyStorefrontFetch({
-            query: getProductsQuery
+        const response = await shopifyAdminFetch({
+            query: getAdminProductsQuery
         });
 
         const edges = response.body?.data?.products?.edges || [];
@@ -14,13 +14,13 @@ export async function GET() {
             return NextResponse.json([
                 {
                     id: "aura-1",
-                    name: "Aura Apex Hoodie (Mock)",
+                    name: "Aura Apex Hoodie (Admin Sync Required)",
                     price: 85.00,
                     image: "/aura_minimalist_hoodie_white_1777950947179.png",
-                    description: "Your Shopify store is connected, but we didn't find any products. Ensure your products are 'Active' and assigned to the 'Headless' channel.",
+                    description: "Admin Token connected, but no products were found in your Shopify Admin. Add items in Shopify to see them here!",
                     brand: "Aura Threads",
-                    productCode: "SYNC-PENDING",
-                    _diagnostic: "No products found in Storefront API. Check Headless channel permissions."
+                    productCode: "ADMIN-SYNC-PENDING",
+                    _diagnostic: "Shopify Admin API returned 0 products. Ensure products exist in your Shopify backend."
                 }
             ]);
         }
@@ -30,18 +30,19 @@ export async function GET() {
             return {
                 id: product.id,
                 name: product.title,
-                price: parseFloat(product.priceRange.minVariantPrice.amount),
-                image: product.images.edges[0]?.node.url || "/assets/p1.png",
+                price: parseFloat(product.variants.edges[0]?.node.price || "0"),
+                image: product.images.edges[0]?.node.url || "/aura_minimalist_hoodie_white_1777950947179.png",
                 description: product.description,
                 brand: "Aura Threads",
                 productCode: product.id.split('/').pop(),
-                handle: product.handle
+                handle: product.handle,
+                status: product.status
             };
         });
 
         return NextResponse.json(products);
     } catch (error: any) {
-        console.error('🔴 Storefront Fetch Failed:', error.message);
-        return NextResponse.json({ error: 'Failed to sync with Shopify Storefront' }, { status: 500 });
+        console.error('🔴 Admin Fetch Failed:', error.message);
+        return NextResponse.json({ error: 'Failed to sync with Shopify Admin' }, { status: 500 });
     }
 }

@@ -78,8 +78,62 @@ export async function shopifyStorefrontFetch({ query, variables = {} }: { query:
   }
 }
 
-// Keep shopifyFetch as an alias for now to prevent breaking existing routes
-export const shopifyFetch = shopifyStorefrontFetch;
+/**
+ * Admin API Fetcher (The Master Key)
+ */
+export async function shopifyAdminFetch({ query, variables = {} }: { query: string, variables?: any }) {
+  const adminToken = process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN;
+  const domain = process.env.SHOPIFY_STORE_DOMAIN || 'aura-threads-jq259sks.myshopify.com';
+  
+  try {
+    const result = await fetch(`https://${domain}/admin/api/2024-04/graphql.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': adminToken!,
+      },
+      body: JSON.stringify({ query, variables }),
+    });
+
+    return {
+      status: result.status,
+      body: await result.json(),
+    };
+  } catch (error) {
+    console.error('Shopify Admin Error:', error);
+    return { status: 500, error: 'Admin API Connection Failed' };
+  }
+}
+
+export const getAdminProductsQuery = `
+  query {
+    products(first: 50) {
+      edges {
+        node {
+          id
+          title
+          description
+          handle
+          status
+          images(first: 1) {
+            edges {
+              node {
+                url
+              }
+            }
+          }
+          variants(first: 1) {
+            edges {
+              node {
+                price
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 export const getProductsQuery = `
   query getProducts {
