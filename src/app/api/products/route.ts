@@ -10,26 +10,17 @@ export async function GET() {
         const edges = response.body?.data?.products?.edges || [];
 
         if (edges.length === 0) {
-            // Return high-quality mock data if the store is empty
+            // Return high-quality mock data with a diagnostic message
             return NextResponse.json([
                 {
                     id: "aura-1",
-                    name: "Essential Heavyweight Hoodie",
+                    name: "Aura Apex Hoodie (Mock)",
                     price: 85.00,
                     image: "/aura_minimalist_hoodie_white_1777950947179.png",
-                    description: "Premium heavyweight cotton. Engineered for the modern voyageur.",
+                    description: "Your Shopify store is connected, but we didn't find any products. Ensure your products are 'Active' and assigned to the 'Headless' channel.",
                     brand: "Aura Threads",
-                    productCode: "3719",
-                    isNew: true
-                },
-                {
-                    id: "aura-2",
-                    name: "Sovereign Oversized Tee",
-                    price: 45.00,
-                    image: "/assets/p1.png",
-                    description: "High-fidelity textiles with relaxed tailoring.",
-                    brand: "Aura Threads",
-                    productCode: "1001"
+                    productCode: "SYNC-PENDING",
+                    _diagnostic: "No products found in Storefront API. Check Headless channel permissions."
                 }
             ]);
         }
