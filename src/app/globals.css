@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 :root {
-  --primary: #8a2be2;
-  --secondary: #d4af37;
-  --accent: #00f2ff;
-  --bg-deep: #050508;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --bg: #ffffff;
+  --text: #000000;
+  --text-muted: #707070;
+  --accent: #ff0000;
+  --border: #eeeeee;
+  --gray-bg: #f9f9f9;
 }
 
 * {
@@ -16,92 +16,112 @@
 }
 
 body {
-  background-color: var(--bg-deep);
-  color: white;
+  background-color: var(--bg);
+  color: var(--text);
   font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
-  cursor: crosshair;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Aura cursor glow */
-.aura-glow {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(138, 43, 226, 0.08) 0%, transparent 70%);
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s;
+.container-wide {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 40px;
 }
 
-/* Premium Card Architecture */
-.obsidian-card {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(24px);
-  border-radius: 40px;
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+/* Navigation */
+nav {
+  height: 90px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
 }
 
-.obsidian-card:hover {
-  transform: translateY(-10px) scale(1.01);
-  border-color: var(--secondary);
-  background: rgba(255, 255, 255, 0.05);
+.nav-link {
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--text);
+  text-decoration: none;
+  transition: opacity 0.2s;
 }
 
-/* Typography Enhancements */
-.text-imperial {
-  letter-spacing: -0.05em;
-  line-height: 0.85;
+.nav-link:hover {
+  opacity: 0.5;
+}
+
+/* Product Cards */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.product-image {
+  aspect-ratio: 3/4;
+  background: var(--gray-bg);
+  overflow: hidden;
+  position: relative;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Typography */
+h1 {
+  font-size: clamp(3rem, 10vw, 8rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
   text-transform: uppercase;
 }
 
-.gradient-aura {
-  background: linear-gradient(135deg, #fff 30%, var(--secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.tag-premium {
+  background: black;
+  color: white;
+  padding: 4px 10px;
+  font-size: 0.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 /* Buttons */
-.btn-sovereign {
-  position: relative;
-  padding: 20px 48px;
-  background: white;
-  color: black;
+.btn-main {
+  background: black;
+  color: white;
+  padding: 20px 40px;
   font-weight: 900;
   text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.3em;
-  border-radius: 100px;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
-.btn-sovereign:hover {
-  transform: scale(1.05);
-  background: var(--secondary);
-  color: white;
-  box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+.btn-main:hover {
+  opacity: 0.8;
 }
 
-/* Animations */
-@keyframes nebula-float {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-2%, 2%) scale(1.05); }
-  100% { transform: translate(0, 0) scale(1); }
+.animate-in {
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.animate-nebula {
-  animation: nebula-float 20s infinite ease-in-out;
-}
-
-@keyframes content-reveal {
-  from { opacity: 0; clip-path: inset(100% 0 0 0); }
-  to { opacity: 1; clip-path: inset(0 0 0 0); }
-}
-
-.animate-reveal {
-  animation: content-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
