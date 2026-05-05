@@ -1,46 +1,56 @@
 import { NextResponse } from 'next/server';
-import { getShopifyProducts } from '@/lib/shopify';
+import { shopifyStorefrontFetch, getProductsQuery } from '@/lib/shopify';
 
 export async function GET() {
     try {
-        // Fetch products using the confirmed Discovery API
-        const response = await getShopifyProducts('t-shirt', 20);
+        const response = await shopifyStorefrontFetch({
+            query: getProductsQuery
+        });
 
-        const items = response.value;
+        const edges = response.body?.data?.products?.edges || [];
 
-        if (!items || items.length === 0) {
-            // Return mock data if the Shopify store is currently empty or no search results
+        if (edges.length === 0) {
+            // Return high-quality mock data if the store is empty
             return NextResponse.json([
                 {
-                    id: "mock-1",
-                    name: "Aura Essentials Hoodie",
-                    price: 65.00,
-                    image: "/assets/apliiq-hoodie.png",
-                    description: "Connection successful, but no products were found in your Shopify store. Add items in Shopify to see them here!",
+                    id: "aura-1",
+                    name: "Essential Heavyweight Hoodie",
+                    price: 85.00,
+                    image: "/aura_minimalist_hoodie_white_1777950947179.png",
+                    description: "Premium heavyweight cotton. Engineered for the modern voyageur.",
                     brand: "Aura Threads",
                     productCode: "3719",
-                    variants: ["S", "M", "L", "XL"]
+                    isNew: true
+                },
+                {
+                    id: "aura-2",
+                    name: "Sovereign Oversized Tee",
+                    price: 45.00,
+                    image: "/assets/p1.png",
+                    description: "High-fidelity textiles with relaxed tailoring.",
+                    brand: "Aura Threads",
+                    productCode: "1001"
                 }
             ]);
         }
 
-        const products = items.map((product: any) => {
+        const products = edges.map((edge: any) => {
+            const product = edge.node;
             return {
                 id: product.id,
                 name: product.title,
-                price: product.priceRange.min.amount / 100, // API returns price in cents (e.g. 699 for $6.99)
-                image: product.media?.[0]?.url || '/assets/apliiq-hoodie.png',
+                price: parseFloat(product.priceRange.minVariantPrice.amount),
+                image: product.images.edges[0]?.node.url || "/assets/p1.png",
                 description: product.description,
-                brand: 'Aura Threads',
-                sku: product.id.split('/').pop(),
+                brand: "Aura Threads",
                 productCode: product.id.split('/').pop(),
-                variants: product.variants?.map((v: any) => v.displayName) || ["Standard"]
+                handle: product.handle
             };
         });
 
         return NextResponse.json(products);
     } catch (error: any) {
-        console.error('🔴 Shopify Discovery Failed:', error.message);
-        return NextResponse.json({ error: `Failed to sync with Shopify: ${error.message}` }, { status: 500 });
+        console.error('🔴 Storefront Fetch Failed:', error.message);
+        return NextResponse.json({ error: 'Failed to sync with Shopify Storefront' }, { status: 500 });
     }
 }
