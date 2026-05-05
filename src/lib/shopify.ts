@@ -1,4 +1,4 @@
-const domain = process.env.SHOPIFY_STORE_DOMAIN || 'printifull-ca.myshopify.com';
+const domain = process.env.SHOPIFY_STORE_DOMAIN || 'aura-threads-jq259sks.myshopify.com';
 const clientId = process.env.SHOPIFY_CLIENT_ID;
 const clientSecret = process.env.SHOPIFY_CLIENT_SECRET;
 
