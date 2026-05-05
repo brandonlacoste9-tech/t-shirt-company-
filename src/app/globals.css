@@ -1,15 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-outfit: "Outfit", sans-serif;
+  
+  --color-stone-50: #fafaf9;
+  --color-stone-100: #f5f5f4;
+  --color-stone-200: #e7e5e4;
+  --color-stone-300: #d6d3d1;
+  --color-stone-400: #a8a29e;
+  --color-stone-500: #78716c;
+  --color-stone-600: #57534e;
+  --color-stone-700: #44403c;
+  --color-stone-800: #292524;
+  --color-stone-900: #1c1917;
+  --color-stone-950: #0c0a09;
+}
 
 :root {
-  --bg: #050505;
-  --bg-offset: #0a0a0a;
-  --text: #ffffff;
-  --text-muted: #808080;
-  --accent: #8a2be2;
-  --accent-glow: rgba(138, 43, 226, 0.3);
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --border: #1a1a1a;
+  --background: #ffffff;
+  --foreground: #1c1917;
+  --selection: #d6d3d1;
 }
 
 * {
@@ -19,134 +29,61 @@
 }
 
 body {
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: 'Outfit', sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-outfit);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Aura Apex Signature Components */
-
-.apex-glass {
-  background: var(--glass);
-  backdrop-filter: blur(32px);
-  border: 1px solid var(--glass-border);
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+::selection {
+  background-color: var(--selection);
+  color: var(--foreground);
 }
 
-.apex-card {
-  background: var(--bg-offset);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  overflow: hidden;
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+/* Custom Utilities for AuraThreads */
+
+.luxury-shadow {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 }
 
-.apex-card:hover {
-  transform: translateY(-10px);
-  border-color: var(--accent);
-  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8), 0 0 40px var(--accent-glow);
-}
-
-/* Typography */
-.text-apex {
-  text-transform: uppercase;
-  letter-spacing: -0.05em;
-  font-weight: 900;
-  line-height: 0.85;
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Navigation */
-nav {
-  height: 90px;
-  background: rgba(5, 5, 5, 0.8);
-  backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--glass-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 60px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-}
-
-.nav-link {
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: 0.65rem;
-  letter-spacing: 0.4em;
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.nav-link:hover, .nav-link.active {
-  color: white;
-  letter-spacing: 0.5em;
-}
-
-/* Buttons */
-.btn-apex {
-  background: white;
-  color: black;
-  padding: 20px 48px;
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 0.3em;
-  border-radius: 100px;
-  border: none;
-  cursor: pointer;
+.luxury-shadow-hover {
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.btn-apex:hover {
-  transform: scale(1.05);
-  background: var(--accent);
-  color: white;
-  box-shadow: 0 0 50px var(--accent-glow);
-}
-
-/* Animations */
-@keyframes nebula-pulse {
-  0% { transform: scale(1); opacity: 0.1; }
-  50% { transform: scale(1.2); opacity: 0.2; }
-  100% { transform: scale(1); opacity: 0.1; }
-}
-
-.nebula-glow {
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-  animation: nebula-pulse 10s infinite ease-in-out;
+.luxury-shadow-hover:hover {
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
 }
 
 .reveal {
-  animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(40px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.container-apex {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 60px;
+/* Smooth Transitions */
+.transition-luxury {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-stone-50);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-stone-300);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-stone-400);
+}
+

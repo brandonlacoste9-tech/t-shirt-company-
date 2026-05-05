@@ -105,6 +105,20 @@ export async function shopifyAdminFetch({ query, variables = {} }: { query: stri
   }
 }
 
+export const getCollectionsQuery = `
+  query getCollections {
+    collections(first: 10) {
+      edges {
+        node {
+          id
+          title
+          handle
+        }
+      }
+    }
+  }
+`;
+
 export const getAdminProductsQuery = `
   query {
     products(first: 50) {
@@ -227,6 +241,33 @@ export const getCollectionProductsQuery = `
               minVariantPrice {
                 amount
               }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const searchProductsQuery = `
+  query searchProducts($query: String!) {
+    products(first: 20, query: $query) {
+      edges {
+        node {
+          id
+          title
+          handle
+          images(first: 1) {
+            edges {
+              node {
+                url
+              }
+            }
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
             }
           }
         }

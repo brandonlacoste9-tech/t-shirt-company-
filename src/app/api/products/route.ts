@@ -14,40 +14,19 @@ export async function GET() {
             return NextResponse.json([
                 {
                     id: "aura-apex-1",
-                    name: "Apex Heavyweight Hoodie",
-                    price: 125.00,
-                    image: "/aura_minimalist_hoodie_white_1777950947179.png",
+                    title: "Apex Heavyweight Hoodie",
+                    handle: "apex-hoodie",
                     description: "Signature heavyweight cotton. Engineered for the modern voyageur. Tech-noir finish.",
-                    brand: "Aura Apex",
-                    productCode: "APEX-H01",
-                    isNew: true
+                    images: { edges: [{ node: { url: "/aura_minimalist_hoodie_white_1777950947179.png" } }] },
+                    priceRange: { minVariantPrice: { amount: "125.00", currencyCode: "AUD" } }
                 },
                 {
                     id: "aura-apex-2",
-                    name: "Sovereign Oversized Tee",
-                    price: 65.00,
-                    image: "/assets/p1.png",
+                    title: "Sovereign Oversized Tee",
+                    handle: "sovereign-tee",
                     description: "High-fidelity liquid cotton. Relaxed silhouette for sovereign comfort.",
-                    brand: "Aura Apex",
-                    productCode: "APEX-T01"
-                },
-                {
-                    id: "aura-apex-3",
-                    name: "Obsidian Tech Joggers",
-                    price: 145.00,
-                    image: "/assets/p2.png",
-                    description: "Water-resistant technical fabric. Multi-node utility storage system.",
-                    brand: "Aura Apex",
-                    productCode: "APEX-J01"
-                },
-                {
-                    id: "aura-apex-4",
-                    name: "Imperial Node Cap",
-                    price: 45.00,
-                    image: "/assets/lifestyle-1.png",
-                    description: "Adjustable technical headwear with embroidered Aura sigil.",
-                    brand: "Aura Apex",
-                    productCode: "APEX-C01"
+                    images: { edges: [{ node: { url: "/assets/p1.png" } }] },
+                    priceRange: { minVariantPrice: { amount: "65.00", currencyCode: "AUD" } }
                 }
             ]);
         }
@@ -56,51 +35,46 @@ export async function GET() {
             const product = edge.node;
             return {
                 id: product.id,
-                name: product.title,
-                price: parseFloat(product.variants.edges[0]?.node.price || "0"),
-                image: product.images.edges[0]?.node.url || "/aura_minimalist_hoodie_white_1777950947179.png",
-                description: product.description,
-                brand: "Aura Threads",
-                productCode: product.id.split('/').pop(),
+                title: product.title,
                 handle: product.handle,
-                status: product.status,
-                type: product.productType
+                description: product.description,
+                images: product.images,
+                priceRange: {
+                    minVariantPrice: {
+                        amount: product.variants.edges[0]?.node.price || "0",
+                        currencyCode: "AUD"
+                    }
+                },
+                variants: product.variants
             };
-        }).filter((p: any) => p.type === 'Clothing');
+        });
 
         if (products.length === 0) {
             // Return a full showroom of high-fidelity Aura Apex garments if no clothing is found
             return NextResponse.json([
                 {
                     id: "aura-apex-1",
-                    name: "Apex Heavyweight Hoodie",
-                    price: 125.00,
-                    image: "/aura_minimalist_hoodie_white_1777950947179.png",
-                    description: "Signature heavyweight cotton. Engineered for the modern voyageur. Tech-noir finish.",
-                    brand: "Aura Apex",
-                    productCode: "APEX-H01",
+                    title: "Apex Heavyweight Hoodie",
                     handle: "apex-hoodie",
-                    isNew: true
+                    description: "Signature heavyweight cotton. Engineered for the modern voyageur. Tech-noir finish.",
+                    images: { edges: [{ node: { url: "/aura_minimalist_hoodie_white_1777950947179.png" } }] },
+                    priceRange: { minVariantPrice: { amount: "125.00", currencyCode: "AUD" } }
                 },
                 {
                     id: "aura-apex-2",
-                    name: "Sovereign Oversized Tee",
-                    price: 65.00,
-                    image: "/assets/p1.png",
-                    description: "High-fidelity liquid cotton. Relaxed silhouette for sovereign comfort. Minimalist node branding.",
-                    brand: "Aura Apex",
-                    productCode: "APEX-T01",
-                    handle: "sovereign-tee"
+                    title: "Sovereign Oversized Tee",
+                    handle: "sovereign-tee",
+                    description: "High-fidelity liquid cotton. Relaxed silhouette for sovereign comfort.",
+                    images: { edges: [{ node: { url: "/assets/p1.png" } }] },
+                    priceRange: { minVariantPrice: { amount: "65.00", currencyCode: "AUD" } }
                 },
                 {
                     id: "aura-apex-3",
-                    name: "Obsidian Tech Joggers",
-                    price: 145.00,
-                    image: "/assets/p2.png",
-                    description: "Water-resistant technical fabric. Multi-node utility storage system. Engineered for mobility.",
-                    brand: "Aura Apex",
-                    productCode: "APEX-J01",
-                    handle: "obsidian-joggers"
+                    title: "Obsidian Tech Joggers",
+                    handle: "obsidian-joggers",
+                    description: "Water-resistant technical fabric. Multi-node utility storage system.",
+                    images: { edges: [{ node: { url: "/assets/p2.png" } }] },
+                    priceRange: { minVariantPrice: { amount: "145.00", currencyCode: "AUD" } }
                 }
             ]);
         }

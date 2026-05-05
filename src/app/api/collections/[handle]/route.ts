@@ -16,16 +16,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ hand
             return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
         }
 
-        const products = collection.products.edges.map((edge: any) => {
-            const product = edge.node;
-            return {
-                id: product.id,
-                name: product.title,
-                price: parseFloat(product.priceRange.minVariantPrice.amount),
-                image: product.images.edges[0]?.node.url || "/assets/p1.png",
-                handle: product.handle
-            };
-        });
+        const products = collection.products.edges.map((edge: any) => edge.node);
 
         return NextResponse.json({
             title: collection.title,

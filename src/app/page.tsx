@@ -1,86 +1,138 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import { useState, useEffect, useRef } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import Hero from '@/components/layout/Hero';
 import ProductCard from '@/components/grid/ProductCard';
-
-const HERO_IMG = '/aura_masterpiece_hero_v3_1777951421477.png';
+import ProductModal from '@/components/grid/ProductModal';
+import FeaturedBanner from '@/components/grid/FeaturedBanner';
 
 export default function Home() {
     const [products, setProducts] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+    const catalogRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        fetch('/api/products').then(res => res.json()).then(setProducts);
+        fetch('/api/products')
+            .then(res => res.json())
+            .then(data => {
+                setProducts(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Error fetching products:', err);
+                setLoading(false);
+            });
     }, []);
 
-    return (
-        <main className="min-h-screen bg-[#050505] text-white selection:bg-accent/30">
-            <div className="bg-accent text-white text-[0.6rem] font-black uppercase tracking-[0.4em] py-3 text-center fixed top-0 w-full z-[2000]">
-                Aura Apex / Node 2.6 Active / Free Worldwide Shipping Sequence
-            </div>
+    const scrollToCatalog = () => {
+        catalogRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
+    const featuredProducts = products.slice(0, 4);
+
+    return (
+        <main className="min-h-screen bg-white selection:bg-stone-200">
             <Header />
 
-            {/* Cinematic Apex Hero */}
-            <section className="relative h-[110vh] flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 z-0 opacity-60">
-                    <Image 
-                        src={HERO_IMG} 
-                        alt="Hero" 
-                        fill 
-                        className="object-cover"
-                        priority
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]/80"></div>
+            {/* Hero Section */}
+            <Hero onShopNow={scrollToCatalog} />
+
+            {/* Featured Section */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                    <div className="reveal">
+                        <p className="text-[0.65rem] font-black uppercase tracking-[0.5em] text-stone-400 mb-4">Curated Highlights</p>
+                        <h2 className="text-4xl md:text-5xl font-black text-stone-900 uppercase tracking-tighter">Featured Pieces</h2>
+                    </div>
+                    <button 
+                        onClick={scrollToCatalog}
+                        className="text-[0.6rem] font-black uppercase tracking-[0.4em] text-stone-400 hover:text-stone-900 transition-colors border-b border-stone-200 pb-1"
+                    >
+                        Explore Complete Catalog →
+                    </button>
                 </div>
 
-                <div className="nebula-glow" style={{ top: '20%', left: '10%' }}></div>
-                <div className="nebula-glow" style={{ bottom: '10%', right: '5%', background: 'radial-gradient(circle, #00f2ff 0%, transparent 70%)', opacity: 0.05 }}></div>
-
-                <div className="relative z-10 text-center px-4 max-w-6xl reveal">
-                    <span className="text-[0.65rem] font-black uppercase tracking-[0.6em] text-accent mb-10 block">Imperial Collection v1.0 / Autumn Sequence</span>
-                    <h1 className="text-[12rem] text-apex gradient-text mb-12">SOVEREIGN</h1>
-                    <p className="text-sm md:text-lg text-white/40 mb-16 max-w-2xl mx-auto font-medium tracking-[0.2em] leading-relaxed uppercase">
-                        High-Fidelity Garment Engineering for the Sovereign Individual. sequenced in Canada, Fulfilled globally via the Apex Node.
-                    </p>
-                    <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
-                        <Link href="/vault" className="btn-apex">
-                            Access The Vault
-                        </Link>
-                        <div className="text-[0.6rem] uppercase tracking-[0.6em] font-black text-white/20 border-l border-white/10 pl-8">
-                            Sync Status: 100% Operational
-                        </div>
-                    </div>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                    {loading ? (
+                        Array.from({ length: 4 }).map((_, i) => (
+                            <div key={i} className="animate-pulse">
+                                <div className="bg-stone-100 aspect-[3/4] mb-4" />
+                                <div className="bg-stone-100 h-3 w-3/4 mb-2" />
+                                <div className="bg-stone-100 h-3 w-1/2" />
+                            </div>
+                        ))
+                    ) : (
+                        featuredProducts.map((p) => (
+                            <div key={p.id} onClick={() => setSelectedProduct(p)} className="cursor-pointer">
+                                <ProductCard product={p} />
+                            </div>
+                        ))
+                    )}
                 </div>
             </section>
 
-            {/* Featured Apex Catalog */}
-            <section className="relative py-60 container-apex">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-32 border-b border-white/5 pb-10">
-                    <div className="reveal">
-                        <h2 className="text-xs uppercase tracking-[0.5em] text-accent font-black mb-6">Active Engineering</h2>
-                        <h3 className="text-7xl font-black text-apex tracking-tighter uppercase">Essentials</h3>
-                    </div>
-                    <Link href="/vault" className="text-[0.65rem] uppercase tracking-[0.4em] font-black opacity-30 hover:opacity-100 transition-opacity pb-2">
-                        View Complete Catalog →
-                    </Link>
+            {/* Banners */}
+            <FeaturedBanner />
+
+            {/* Catalog Section */}
+            <section ref={catalogRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 border-t border-stone-100">
+                <div className="mb-12">
+                    <p className="text-[0.65rem] font-black uppercase tracking-[0.5em] text-stone-400 mb-4">The Collection</p>
+                    <h2 className="text-4xl md:text-5xl font-black text-stone-900 uppercase tracking-tighter">Entire Catalog</h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10">
-                    {products.length > 0 ? products.map((p: any) => (
-                        <ProductCard key={p.id} product={p} />
-                    )) : (
-                        <div className="col-span-full h-80 apex-glass rounded-3xl flex items-center justify-center text-white/20 font-black uppercase tracking-[0.5em] text-xs">
-                            Synchronizing Sales Node...
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+                    {loading ? (
+                        Array.from({ length: 8 }).map((_, i) => (
+                            <div key={i} className="animate-pulse">
+                                <div className="bg-stone-100 aspect-[3/4] mb-4" />
+                                <div className="bg-stone-100 h-3 w-3/4 mb-2" />
+                                <div className="bg-stone-100 h-3 w-1/2" />
+                            </div>
+                        ))
+                    ) : products.length > 0 ? (
+                        products.map((p) => (
+                            <div key={p.id} onClick={() => setSelectedProduct(p)} className="cursor-pointer">
+                                <ProductCard product={p} />
+                            </div>
+                        ))
+                    ) : (
+                        <div className="col-span-full py-20 text-center">
+                            <p className="text-[0.65rem] font-black uppercase tracking-[0.4em] text-stone-300">Synchronizing Product Sequence...</p>
                         </div>
                     )}
                 </div>
             </section>
 
+            {/* Value Props */}
+            <section className="bg-stone-50 py-20 border-y border-stone-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+                        {[
+                            { title: 'Global Logistics', desc: 'Secure fulfillment sequence' },
+                            { title: 'Easy Returns', desc: '30-day garment protection' },
+                            { title: 'Secure Checkout', desc: 'SSL encrypted gateway' },
+                            { title: 'Priority Support', desc: 'Engineering assistance' },
+                        ].map(item => (
+                            <div key={item.title} className="reveal">
+                                <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-stone-900 mb-2">{item.title}</p>
+                                <p className="text-[0.55rem] font-black uppercase tracking-[0.2em] text-stone-400">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <ProductModal 
+                product={selectedProduct} 
+                onClose={() => setSelectedProduct(null)} 
+            />
+
             <Footer />
         </main>
     );
 }
+

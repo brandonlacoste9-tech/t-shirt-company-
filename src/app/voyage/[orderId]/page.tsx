@@ -3,19 +3,22 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import { Check, Package, Truck, Info, MapPin, Calendar, Clock } from 'lucide-react';
 
 const steps = [
-    { id: 'origin', title: 'Origin', desc: 'Design Authenticated & Sequenced', status: 'completed' },
-    { id: 'manufacturing', title: 'Production', desc: 'Active on Apliiq Floor', status: 'current' },
-    { id: 'branding', title: 'Branding', desc: 'Custom Woven Label Application', status: 'pending' },
-    { id: 'quality', title: 'Quality Control', desc: 'Final Technical Inspection', status: 'pending' },
-    { id: 'voyage', title: 'On Voyage', desc: 'Dispatched to Destination', status: 'pending' }
+    { id: 'origin', title: 'Origin', desc: 'Design Authenticated', status: 'completed' },
+    { id: 'manufacturing', title: 'Production', desc: 'Active Sequence', status: 'current' },
+    { id: 'branding', title: 'Branding', desc: 'Custom Labeling', status: 'pending' },
+    { id: 'quality', title: 'Quality', desc: 'Final Inspection', status: 'pending' },
+    { id: 'voyage', title: 'On Voyage', desc: 'Dispatched', status: 'pending' }
 ];
 
 export default function VoyageTracker() {
     const params = useParams();
     const orderId = params.orderId as string;
-    const [activeStep, setActiveStep] = useState(0);
+    const [activeStep, setActiveStep] = useState(1);
     const [loading, setLoading] = useState(true);
     const [orderData, setOrderData] = useState<any>(null);
 
@@ -37,88 +40,99 @@ export default function VoyageTracker() {
             });
     }, [orderId]);
 
+    if (loading) return (
+        <div className="min-h-screen bg-white flex items-center justify-center">
+            <p className="text-[0.65rem] font-black uppercase tracking-[0.4em] text-stone-300 animate-pulse">Establishing Connection...</p>
+        </div>
+    );
+
     return (
-        <main className="min-h-screen bg-[#050507] text-white p-10 font-['Outfit'] overflow-hidden relative">
-            {/* Background Map Graphic (Stylized) */}
-            <div className="absolute inset-0 opacity-10 pointer-events-none">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vh] border border-primary/20 rounded-full"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] border border-secondary/20 rounded-full"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vh] border border-white/5 rounded-full"></div>
-            </div>
+        <main className="min-h-screen bg-white text-stone-900 selection:bg-stone-200">
+            <Header />
 
-            <nav className="relative z-10 mb-20 flex justify-between items-center max-w-7xl mx-auto">
-                <Link href="/" className="logo text-2xl font-extrabold">AURA<span>THREADS</span></Link>
-                <div className="text-right">
-                    <p className="text-[0.6rem] uppercase tracking-widest text-white/40 mb-1">Voyage Reference</p>
-                    <p className="font-mono text-sm">{orderId}</p>
-                </div>
-            </nav>
-
-            <div className="max-w-5xl mx-auto relative z-10">
-                <header className="text-center mb-24">
-                    <h1 className="text-5xl font-extrabold mb-4">Track Your <span className="gradient-text">Voyage</span></h1>
-                    <p className="text-white/60">Your garment is currently being crafted by our masters at Apliiq.</p>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+                <header className="mb-24 text-center reveal">
+                    <p className="text-[0.65rem] font-black uppercase tracking-[0.5em] text-stone-400 mb-6">Voyage Status</p>
+                    <h1 className="text-5xl md:text-6xl font-black text-stone-900 uppercase tracking-tighter mb-4 leading-none">Track Order</h1>
+                    <div className="flex items-center justify-center gap-3">
+                        <span className="text-[0.6rem] font-black uppercase tracking-[0.3em] text-stone-300">Reference:</span>
+                        <span className="text-[0.7rem] font-black uppercase tracking-[0.2em] text-stone-900">{orderId}</span>
+                    </div>
                 </header>
 
-                <div className="relative">
-                    {/* Progress Line */}
-                    <div className="absolute top-1/2 left-0 w-full h-[2px] bg-white/5 -translate-y-1/2 hidden lg:block"></div>
-                    <div 
-                        className="absolute top-1/2 left-0 h-[2px] bg-gradient-to-r from-primary to-secondary -translate-y-1/2 transition-all duration-1000 hidden lg:block"
-                        style={{ width: `${(activeStep / (steps.length - 1)) * 100}%` }}
-                    ></div>
+                <div className="max-w-5xl mx-auto mb-32">
+                    <div className="relative">
+                        {/* Progress Line */}
+                        <div className="absolute top-1/2 left-0 w-full h-[1px] bg-stone-100 -translate-y-1/2 hidden lg:block"></div>
+                        <div 
+                            className="absolute top-1/2 left-0 h-[1px] bg-stone-900 -translate-y-1/2 transition-all duration-1000 hidden lg:block"
+                            style={{ width: `${(activeStep / (steps.length - 1)) * 100}%` }}
+                        ></div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 relative">
-                        {steps.map((step, index) => (
-                            <div key={step.id} className="flex flex-col items-center text-center group">
-                                <div className={`
-                                    w-16 h-16 rounded-full flex items-center justify-center mb-6 z-10 transition-all duration-500 border-2
-                                    ${index < activeStep ? 'bg-primary border-primary shadow-[0_0_20px_rgba(138,43,226,0.5)]' : 
-                                      index === activeStep ? 'bg-bg-dark border-secondary animate-pulse' : 
-                                      'bg-bg-dark border-white/10'}
-                                `}>
-                                    {index < activeStep ? (
-                                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
-                                    ) : (
-                                        <span className="text-sm font-bold">{index + 1}</span>
-                                    )}
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 relative">
+                            {steps.map((step, index) => (
+                                <div key={step.id} className="flex flex-col items-center text-center group reveal" style={{ animationDelay: `${index * 0.1}s` }}>
+                                    <div className={`
+                                        w-12 h-12 rounded-full flex items-center justify-center mb-6 z-10 transition-all duration-500 border
+                                        ${index < activeStep ? 'bg-stone-900 border-stone-900 text-white' : 
+                                          index === activeStep ? 'bg-white border-stone-900 text-stone-900 animate-pulse' : 
+                                          'bg-white border-stone-100 text-stone-200'}
+                                    `}>
+                                        {index < activeStep ? (
+                                            <Check size={18} strokeWidth={3} />
+                                        ) : (
+                                            <span className="text-[0.7rem] font-black">{index + 1}</span>
+                                        )}
+                                    </div>
+                                    <h3 className={`text-[0.65rem] font-black uppercase tracking-[0.2em] mb-2 transition-colors ${index <= activeStep ? 'text-stone-900' : 'text-stone-200'}`}>{step.title}</h3>
+                                    <p className={`text-[0.55rem] font-black uppercase tracking-[0.15em] transition-colors ${index <= activeStep ? 'text-stone-400' : 'text-stone-100'}`}>{step.desc}</p>
                                 </div>
-                                <h3 className={`font-bold mb-2 transition-colors ${index <= activeStep ? 'text-white' : 'text-white/20'}`}>{step.title}</h3>
-                                <p className={`text-[0.7rem] leading-relaxed transition-colors ${index <= activeStep ? 'text-white/40' : 'text-white/10'}`}>{step.desc}</p>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
 
-                <div className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-xl">
-                        <h4 className="text-[0.6rem] uppercase tracking-widest text-white/40 mb-4">Location</h4>
-                        <p className="font-bold">{orderData?.details?.location || 'Apliiq Factory Floor'}</p>
-                        <p className="text-sm text-white/60">{orderData?.details?.city || 'Los Angeles, CA'}</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 reveal" style={{ animationDelay: '0.6s' }}>
+                    <div className="bg-stone-50 p-10 luxury-shadow">
+                        <div className="flex items-center gap-3 mb-6">
+                            <MapPin size={16} className="text-stone-400" />
+                            <h4 className="text-[0.6rem] uppercase tracking-[0.4em] text-stone-400 font-black">Location</h4>
+                        </div>
+                        <p className="font-black text-sm uppercase tracking-wider text-stone-900">{orderData?.details?.location || 'Processing Node'}</p>
+                        <p className="text-[0.6rem] font-black uppercase tracking-widest text-stone-400 mt-2">{orderData?.details?.city || 'Sequence Verified'}</p>
                     </div>
-                    <div className="bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-xl">
-                        <h4 className="text-[0.6rem] uppercase tracking-widest text-white/40 mb-4">Service Level</h4>
-                        <p className="font-bold">{orderData?.details?.serviceLevel || 'Priority Production'}</p>
-                        <p className="text-sm text-white/60">{orderData?.details?.branding ? `${orderData.details.branding} Active` : 'Bespoke Branding Active'}</p>
+                    <div className="bg-stone-50 p-10 luxury-shadow">
+                        <div className="flex items-center gap-3 mb-6">
+                            <Package size={16} className="text-stone-400" />
+                            <h4 className="text-[0.6rem] uppercase tracking-[0.4em] text-stone-400 font-black">Service Level</h4>
+                        </div>
+                        <p className="font-black text-sm uppercase tracking-wider text-stone-900">{orderData?.details?.serviceLevel || 'Standard Engineering'}</p>
+                        <p className="text-[0.6rem] font-black uppercase tracking-widest text-stone-400 mt-2">Global Logistics Active</p>
                     </div>
-                    <div className="bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-xl">
-                        <h4 className="text-[0.6rem] uppercase tracking-widest text-white/40 mb-4">Estimated Arrival</h4>
-                        <p className="font-bold">{orderData?.details?.arrival || 'May 14 - May 16'}</p>
-                        <p className="text-sm text-white/60">International Express</p>
+                    <div className="bg-stone-50 p-10 luxury-shadow">
+                        <div className="flex items-center gap-3 mb-6">
+                            <Calendar size={16} className="text-stone-400" />
+                            <h4 className="text-[0.6rem] uppercase tracking-[0.4em] text-stone-400 font-black">Estimated Arrival</h4>
+                        </div>
+                        <p className="font-black text-sm uppercase tracking-wider text-stone-900">{orderData?.details?.arrival || 'Awaiting Schedule'}</p>
+                        <p className="text-[0.6rem] font-black uppercase tracking-widest text-stone-400 mt-2">Transit Pending</p>
+                    </div>
+                </div>
+
+                <div className="mt-24 pt-12 border-t border-stone-100 flex flex-col md:flex-row justify-between items-center gap-8 reveal" style={{ animationDelay: '0.8s' }}>
+                    <div className="flex items-center gap-6">
+                        <Link href="/" className="text-[0.6rem] font-black uppercase tracking-[0.4em] text-stone-400 hover:text-stone-900 transition-colors">Return Home</Link>
+                        <Link href="/collections/all" className="text-[0.6rem] font-black uppercase tracking-[0.4em] text-stone-400 hover:text-stone-900 transition-colors">Shop More</Link>
+                    </div>
+                    <div className="flex items-center gap-3 px-6 py-3 bg-stone-50 rounded-full luxury-shadow">
+                        <Info size={14} className="text-stone-400" />
+                        <span className="text-[0.55rem] font-black uppercase tracking-[0.2em] text-stone-400">Garment engineering sequenced by Apliiq</span>
                     </div>
                 </div>
             </div>
 
-            <footer className="mt-40 text-center py-10 border-t border-white/5 opacity-30 text-xs">
-                &copy; 2026 Aura Threads. Defined by Quality. Fulfilled by Apliiq.
-            </footer>
-
-            <style jsx>{`
-                .logo { font-size: 1.5rem; font-weight: 800; color: white; text-decoration: none; }
-                .logo span { color: #8a2be2; }
-                .gradient-text { background: linear-gradient(135deg, #8a2be2, #00f2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-                .bg-bg-dark { background-color: #050507; }
-            `}</style>
+            <Footer />
         </main>
     );
 }
+
