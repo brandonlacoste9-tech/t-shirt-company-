@@ -63,9 +63,47 @@ export async function GET() {
                 brand: "Aura Threads",
                 productCode: product.id.split('/').pop(),
                 handle: product.handle,
-                status: product.status
+                status: product.status,
+                type: product.productType
             };
-        });
+        }).filter((p: any) => p.type === 'Clothing');
+
+        if (products.length === 0) {
+            // Return a full showroom of high-fidelity Aura Apex garments if no clothing is found
+            return NextResponse.json([
+                {
+                    id: "aura-apex-1",
+                    name: "Apex Heavyweight Hoodie",
+                    price: 125.00,
+                    image: "/aura_minimalist_hoodie_white_1777950947179.png",
+                    description: "Signature heavyweight cotton. Engineered for the modern voyageur. Tech-noir finish.",
+                    brand: "Aura Apex",
+                    productCode: "APEX-H01",
+                    handle: "apex-hoodie",
+                    isNew: true
+                },
+                {
+                    id: "aura-apex-2",
+                    name: "Sovereign Oversized Tee",
+                    price: 65.00,
+                    image: "/assets/p1.png",
+                    description: "High-fidelity liquid cotton. Relaxed silhouette for sovereign comfort. Minimalist node branding.",
+                    brand: "Aura Apex",
+                    productCode: "APEX-T01",
+                    handle: "sovereign-tee"
+                },
+                {
+                    id: "aura-apex-3",
+                    name: "Obsidian Tech Joggers",
+                    price: 145.00,
+                    image: "/assets/p2.png",
+                    description: "Water-resistant technical fabric. Multi-node utility storage system. Engineered for mobility.",
+                    brand: "Aura Apex",
+                    productCode: "APEX-J01",
+                    handle: "obsidian-joggers"
+                }
+            ]);
+        }
 
         return NextResponse.json(products);
     } catch (error: any) {
