@@ -53,17 +53,17 @@ export default function Home() {
                 <div className="nebula-glow" style={{ bottom: '10%', right: '5%', background: 'radial-gradient(circle, #00f2ff 0%, transparent 70%)', opacity: 0.05 }}></div>
 
                 <div className="relative z-10 text-center px-4 max-w-6xl reveal">
-                    <span className="text-[0.65rem] font-black uppercase tracking-[0.6em] text-accent mb-10 block">Imperial Collection v1.0</span>
+                    <span className="text-[0.65rem] font-black uppercase tracking-[0.6em] text-accent mb-10 block">Imperial Collection v1.0 / Autumn Sequence</span>
                     <h1 className="text-[12rem] text-apex gradient-text mb-12">SOVEREIGN</h1>
-                    <p className="text-sm md:text-lg text-white/40 mb-16 max-w-xl mx-auto font-medium tracking-[0.2em] leading-relaxed uppercase">
-                        High-Fidelity Engineering for the Modern Voyageur. Controlled by the Apex Node.
+                    <p className="text-sm md:text-lg text-white/40 mb-16 max-w-2xl mx-auto font-medium tracking-[0.2em] leading-relaxed uppercase">
+                        High-Fidelity Garment Engineering for the Sovereign Individual. sequenced in Canada, Fulfilled globally via the Apex Node.
                     </p>
                     <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
                         <Link href="/vault" className="btn-apex">
-                            Enter The Vault
+                            Access The Vault
                         </Link>
                         <div className="text-[0.6rem] uppercase tracking-[0.6em] font-black text-white/20 border-l border-white/10 pl-8">
-                            Status: Online / Latency: 4ms
+                            Sync Status: 100% Operational
                         </div>
                     </div>
                 </div>
@@ -73,11 +73,11 @@ export default function Home() {
             <section className="relative py-60 container-apex">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-32 border-b border-white/5 pb-10">
                     <div className="reveal">
-                        <h2 className="text-xs uppercase tracking-[0.5em] text-accent font-black mb-6">Current Sequence</h2>
+                        <h2 className="text-xs uppercase tracking-[0.5em] text-accent font-black mb-6">Active Engineering</h2>
                         <h3 className="text-7xl font-black text-apex tracking-tighter uppercase">Essentials</h3>
                     </div>
                     <Link href="/vault" className="text-[0.65rem] uppercase tracking-[0.4em] font-black opacity-30 hover:opacity-100 transition-opacity pb-2">
-                        View Complete Engineering →
+                        View Complete Catalog →
                     </Link>
                 </div>
 
@@ -93,7 +93,7 @@ export default function Home() {
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <div className="absolute bottom-6 left-6 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0">
-                                    <span className="text-[0.6rem] font-black uppercase tracking-widest bg-white text-black px-4 py-2 rounded-full">Quick Add</span>
+                                    <span className="text-[0.6rem] font-black uppercase tracking-widest bg-white text-black px-4 py-2 rounded-full">Explore Garment</span>
                                 </div>
                             </div>
                             <div className="p-8 space-y-4">
@@ -101,12 +101,12 @@ export default function Home() {
                                     <h4 className="text-xl font-black tracking-tighter uppercase group-hover:text-accent transition-colors">{p.name}</h4>
                                     <span className="text-lg font-black text-accent">${p.price}</span>
                                 </div>
-                                <p className="text-[0.6rem] uppercase tracking-[0.4em] text-white/20 font-black">Blueprint: {p.productCode}</p>
+                                <p className="text-[0.6rem] uppercase tracking-[0.4em] text-white/20 font-black">Node SKU: {p.productCode}</p>
                             </div>
                         </Link>
                     )) : (
                         <div className="col-span-full h-80 apex-glass rounded-3xl flex items-center justify-center text-white/20 font-black uppercase tracking-[0.5em] text-xs">
-                            Syncing Apex Sales Node...
+                            Synchronizing Sales Node...
                         </div>
                     )}
                 </div>
@@ -118,28 +118,28 @@ export default function Home() {
                     <div className="col-span-2 space-y-12">
                         <div className="text-4xl font-black tracking-tighter">AURA<span className="text-accent italic">APEX</span></div>
                         <p className="text-sm text-white/30 leading-relaxed font-medium max-w-sm">
-                            The definitive signature in high-fidelity apparel. Engineered for the sovereign individual, fulfilled via the global Apliiq manufacturing sequence.
+                            The definitive signature in high-fidelity apparel. Engineered for the sovereign individual, fulfilled via the global Apliiq manufacturing sequence. Direct-to-patron retail.
                         </p>
                     </div>
                     <div className="space-y-8">
-                        <h4 className="text-[0.6rem] font-black uppercase tracking-[0.5em] text-white/20">Navigation</h4>
+                        <h4 className="text-[0.6rem] font-black uppercase tracking-[0.5em] text-white/20">Governance</h4>
                         <ul className="space-y-4 text-[0.65rem] font-black uppercase tracking-[0.4em] text-white/40">
                             <li><Link href="/vault" className="hover:text-white">The Vault</Link></li>
-                            <li><Link href="#" className="hover:text-white">Shipping Node</Link></li>
-                            <li><Link href="#" className="hover:text-white">Support</Link></li>
+                            <li><Link href="/shipping" className="hover:text-white">Logistics & Shipping</Link></li>
+                            <li><Link href="/returns" className="hover:text-white">Returns & Exchanges</Link></li>
                         </ul>
                     </div>
                     <div className="space-y-8">
                         <h4 className="text-[0.6rem] font-black uppercase tracking-[0.5em] text-white/20">Connect</h4>
                         <ul className="space-y-4 text-[0.65rem] font-black uppercase tracking-[0.4em] text-white/40">
                             <li><Link href="#" className="hover:text-white">Instagram</Link></li>
-                            <li><Link href="#" className="hover:text-white">Twitter</Link></li>
-                            <li><Link href="#" className="hover:text-white">Discord</Link></li>
+                            <li><Link href="#" className="hover:text-white">Email the Node</Link></li>
+                            <li><Link href="/admin/sync" className="hover:text-white opacity-20">Sync Diagnostics</Link></li>
                         </ul>
                     </div>
                 </div>
                 <div className="mt-40 text-center text-[0.5rem] font-black uppercase tracking-[1em] text-white/5">
-                    AURA THREADS CANADA &copy; 2026 / APEX NODE v2.6
+                    AURA THREADS CANADA &copy; 2026 / APEX NODE v2.6 / SOVEREIGNTY SECURED
                 </div>
             </footer>
         </main>
