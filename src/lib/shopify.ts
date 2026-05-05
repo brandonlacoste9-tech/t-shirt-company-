@@ -118,6 +118,69 @@ export const getProductsQuery = `
   }
 `;
 
+export const getProductQuery = `
+  query getProduct($handle: String!) {
+    product(handle: $handle) {
+      id
+      title
+      description
+      handle
+      images(first: 5) {
+        edges {
+          node {
+            url
+            altText
+          }
+        }
+      }
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      variants(first: 10) {
+        edges {
+          node {
+            id
+            title
+            availableForSale
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const getCollectionProductsQuery = `
+  query getCollectionProducts($handle: String!) {
+    collection(handle: $handle) {
+      title
+      products(first: 20) {
+        edges {
+          node {
+            id
+            title
+            handle
+            images(first: 1) {
+              edges {
+                node {
+                  url
+                }
+              }
+            }
+            priceRange {
+              minVariantPrice {
+                amount
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const customerAccessTokenCreateMutation = `
   mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
     customerAccessTokenCreate(input: $input) {

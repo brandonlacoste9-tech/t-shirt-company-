@@ -1,0 +1,197 @@
+﻿{
+    "jsonrpc":  "2.0",
+    "id":  1,
+    "result":  {
+                   "tools":  [
+                                 {
+                                     "name":  "search_global_products",
+                                     "description":  "Use this tool when buyers are searching for products and haven\u0027t provided a specific shop.\nFor example:\n- \"I\u0027m looking for a pair of shoes\"\n- \"Could you find me some blue jeans?\"\n- \"I need a new dress, I\u0027m a size 10 and I like the color blue\"\n\nYou can also use a saved catalog slug to search using saved catalog filters.\n",
+                                     "inputSchema":  {
+                                                         "type":  "object",
+                                                         "properties":  {
+                                                                            "limit":  {
+                                                                                          "type":  "integer",
+                                                                                          "description":  "The maximum number of products to return",
+                                                                                          "minimum":  1,
+                                                                                          "maximum":  10,
+                                                                                          "default":  10
+                                                                                      },
+                                                                            "max_price":  {
+                                                                                              "type":  "number",
+                                                                                              "description":  "The maximum price the buyer is willing to pay, without the unit.",
+                                                                                              "minimum":  0
+                                                                                          },
+                                                                            "min_price":  {
+                                                                                              "type":  "number",
+                                                                                              "description":  "The minimum price the buyer is willing to pay, without the unit.",
+                                                                                              "minimum":  0
+                                                                                          },
+                                                                            "query":  {
+                                                                                          "type":  "string",
+                                                                                          "description":  "The search query to find related products eg. \u0027shoes\u0027 \u0027blue jeans\u0027. Required unless a saved_catalog is provided that already contains a query. When in doubt, always provide a query as fallback."
+                                                                                      },
+                                                                            "include_secondhand":  {
+                                                                                                       "type":  "boolean",
+                                                                                                       "description":  "When true, include secondhand products. Otherwise, only first-hand products may be shown."
+                                                                                                   },
+                                                                            "ships_to":  {
+                                                                                             "type":  "string",
+                                                                                             "description":  "The countries to ship to (ISO country code)"
+                                                                                         },
+                                                                            "ships_from":  {
+                                                                                               "type":  "string",
+                                                                                               "description":  "The countries to ship from (ISO country code)"
+                                                                                           },
+                                                                            "shop_ids":  {
+                                                                                             "type":  "array",
+                                                                                             "items":  {
+                                                                                                           "type":  "string"
+                                                                                                       }
+                                                                                         },
+                                                                            "requires_selling_plan":  {
+                                                                                                          "type":  "boolean",
+                                                                                                          "description":  "When true, includes only subscription products, when false, includes only non-subscription products. Omit for all products."
+                                                                                                      },
+                                                                            "products_limit":  {
+                                                                                                   "type":  "integer",
+                                                                                                   "description":  "The maximum number of products to return per universal product.",
+                                                                                                   "minimum":  1,
+                                                                                                   "maximum":  10,
+                                                                                                   "default":  10
+                                                                                               },
+                                                                            "saved_catalog":  {
+                                                                                                  "type":  "string",
+                                                                                                  "description":  "The slug of a saved catalog. When provided, saved catalog filters always take precedence. Additional parameters not in the saved catalog are still applied. Note: saved catalogs may or may not contain a query - if they don\u0027t, you must provide the query parameter explicitly."
+                                                                                              },
+                                                                            "available_for_sale":  {
+                                                                                                       "type":  "boolean",
+                                                                                                       "description":  "When true, include only products available for sale. Otherwise, unavailable products may be shown."
+                                                                                                   },
+                                                                            "context":  {
+                                                                                            "type":  "string",
+                                                                                            "description":  "Additional information about the request such as user demographics, mood, location, or other relevant details that could help in tailoring the response appropriately."
+                                                                                        }
+                                                                        },
+                                                         "required":  [
+                                                                          "context"
+                                                                      ],
+                                                         "anyOf":  [
+                                                                       {
+                                                                           "required":  [
+                                                                                            "query"
+                                                                                        ]
+                                                                       },
+                                                                       {
+                                                                           "required":  [
+                                                                                            "saved_catalog"
+                                                                                        ]
+                                                                       }
+                                                                   ]
+                                                     }
+                                 },
+                                 {
+                                     "name":  "get_global_product_details",
+                                     "description":  "Use this tool when a buyer is asking about a specific product and you know the product ID.\nThis tool takes a universal product ID (UPID) and returns detailed information about the product.\n\nFor example:\n- When a buyer asks \"Tell me more about this product\" and provides a product link or ID\n- When looking up detailed product information for a specific product the buyer has mentioned\n- When you need to show information about variants, pricing, and availability of a specific product\n",
+                                     "inputSchema":  {
+                                                         "type":  "object",
+                                                         "properties":  {
+                                                                            "upid":  {
+                                                                                         "type":  "string",
+                                                                                         "description":  "The universal product ID (in Base62 encoded format). Provide either upid or variant_id, not both."
+                                                                                     },
+                                                                            "_gsid":  {
+                                                                                          "type":  "string",
+                                                                                          "description":  "Reference to the Global Search which generated the URL. Optional, and pre-populated in Global Search results."
+                                                                                      },
+                                                                            "available_for_sale":  {
+                                                                                                       "type":  "boolean",
+                                                                                                       "description":  "When true, include only products available for sale. Otherwise, unavailable products may be shown."
+                                                                                                   },
+                                                                            "context":  {
+                                                                                            "type":  "string",
+                                                                                            "description":  "Additional information about the request such as user demographics, mood, location, or other relevant details that could help in tailoring the response appropriately."
+                                                                                        },
+                                                                            "limit":  {
+                                                                                          "type":  "integer",
+                                                                                          "description":  "The maximum number of offers to return for the product.",
+                                                                                          "minimum":  1,
+                                                                                          "maximum":  100,
+                                                                                          "default":  10
+                                                                                      },
+                                                                            "product_options":  {
+                                                                                                    "type":  "array",
+                                                                                                    "description":  "Product options like color, size, etc.",
+                                                                                                    "items":  {
+                                                                                                                  "type":  "object",
+                                                                                                                  "properties":  {
+                                                                                                                                     "key":  {
+                                                                                                                                                 "type":  "string",
+                                                                                                                                                 "minLength":  1
+                                                                                                                                             },
+                                                                                                                                     "values":  {
+                                                                                                                                                    "type":  "array",
+                                                                                                                                                    "items":  {
+                                                                                                                                                                  "type":  "string"
+                                                                                                                                                              }
+                                                                                                                                                }
+                                                                                                                                 },
+                                                                                                                  "required":  [
+                                                                                                                                   "key",
+                                                                                                                                   "values"
+                                                                                                                               ]
+                                                                                                              }
+                                                                                                },
+                                                                            "query":  {
+                                                                                          "type":  "string",
+                                                                                          "description":  "Keyword(s) for search."
+                                                                                      },
+                                                                            "include_secondhand":  {
+                                                                                                       "type":  "boolean",
+                                                                                                       "description":  "When true, include secondhand products."
+                                                                                                   },
+                                                                            "ships_from":  {
+                                                                                               "type":  "string",
+                                                                                               "description":  "The countries to ship from (ISO country code)"
+                                                                                           },
+                                                                            "ships_to":  {
+                                                                                             "type":  "string",
+                                                                                             "description":  "The countries to ship to (ISO country code)"
+                                                                                         },
+                                                                            "shop_id":  {
+                                                                                            "type":  "string",
+                                                                                            "description":  "Filter products by shop ID. Can be a numeric shop ID (e.g. \u002768393009375\u0027) or a Shop GID (e.g. \u0027gid://shopify/Shop/68393009375\u0027)"
+                                                                                        },
+                                                                            "variant_id":  {
+                                                                                               "type":  "integer",
+                                                                                               "description":  "The Shopify variant ID. Provide either variant_id or upid, not both."
+                                                                                           },
+                                                                            "product_id":  {
+                                                                                               "type":  "integer",
+                                                                                               "description":  "Will force this product to be the first result if no query is provided."
+                                                                                           },
+                                                                            "contextualize_pricing":  {
+                                                                                                          "type":  "boolean",
+                                                                                                          "description":  "When true, return contextualized pricing based on buyer location"
+                                                                                                      },
+                                                                            "option_preferences":  {
+                                                                                                       "type":  "string",
+                                                                                                       "description":  "Comma-separated list of option names in order of preference for relaxing filters when no match is found for passed product_options (e.g., \u0027Color,Size,Material\u0027 , Color is most important to match)"
+                                                                                                   }
+                                                                        },
+                                                         "oneOf":  [
+                                                                       {
+                                                                           "required":  [
+                                                                                            "upid"
+                                                                                        ]
+                                                                       },
+                                                                       {
+                                                                           "required":  [
+                                                                                            "variant_id"
+                                                                                        ]
+                                                                       }
+                                                                   ]
+                                                     }
+                                 }
+                             ]
+               }
+}
