@@ -1,57 +1,53 @@
 import { NextResponse } from 'next/server';
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {
-  apiVersion: '2025-02-24.acacia' as any,
-});
+import { shopifyFetch } from '@/lib/shopify';
 
 export async function POST(request: Request) {
   try {
     const { items } = await request.json();
 
-    const line_items = items.map((item: any) => ({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: item.name,
-          description: `${item.size} | ${item.branding}`,
-          images: [`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}${item.image}`],
-        },
-        unit_amount: Math.round(item.price * 100),
-      },
-      quantity: item.quantity,
+    // 1. Create a Shopify Checkout using the Storefront API
+    const checkoutCreateMutation = `
+      mutation checkoutCreate($input: CheckoutCreateInput!) {
+        checkoutCreate(input: $input) {
+          checkout {
+            id
+            webUrl
+          }
+          checkoutUserErrors {
+            code
+            field
+            message
+          }
+        }
+      }
+    `;
+
+    // Map cart items to Shopify variant IDs
+    // Note: In a real app, variant IDs must be the full Shopify GID format
+    const lineItems = items.map((item: any) => ({
+      variantId: item.id, // Assuming item.id is the Shopify Variant GID
+      quantity: item.quantity
     }));
 
-    // Add shipping as a line item for simplicity in MVP
-    line_items.push({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: 'Express Shipping',
-          description: 'Apliiq Global Priority',
-        },
-        unit_amount: 1200,
-      },
-      quantity: 1,
-    });
-
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items,
-      mode: 'payment',
-      shipping_address_collection: {
-        allowed_countries: ['US', 'CA', 'GB', 'FR'],
-      },
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/voyage/AT-{CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/`,
-      metadata: {
-        order_type: 'apliiq_fulfillment',
+    const response = await shopifyFetch({
+      query: checkoutCreateMutation,
+      variables: {
+        input: {
+          lineItems
+        }
       }
     });
 
-    return NextResponse.json({ url: session.url });
+    const checkout = response.body.data.checkoutCreate.checkout;
+    const errors = response.body.data.checkoutCreate.checkoutUserErrors;
+
+    if (errors && errors.length > 0) {
+      throw new Error(errors[0].message);
+    }
+
+    return NextResponse.json({ url: checkout.webUrl });
   } catch (error: any) {
-    console.error('Stripe Error:', error);
+    console.error('Shopify Checkout Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
