@@ -1,12 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 :root {
-  --bg: #ffffff;
-  --text: #000000;
-  --text-muted: #707070;
-  --accent: #ff0000;
-  --border: #eeeeee;
-  --gray-bg: #f9f9f9;
+  --bg: #050505;
+  --bg-offset: #0a0a0a;
+  --text: #ffffff;
+  --text-muted: #808080;
+  --accent: #8a2be2;
+  --accent-glow: rgba(138, 43, 226, 0.3);
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --border: #1a1a1a;
 }
 
 * {
@@ -23,105 +26,127 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.container-wide {
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 40px;
+/* Aura Apex Signature Components */
+
+.apex-glass {
+  background: var(--glass);
+  backdrop-filter: blur(32px);
+  border: 1px solid var(--glass-border);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apex-card {
+  background: var(--bg-offset);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apex-card:hover {
+  transform: translateY(-10px);
+  border-color: var(--accent);
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8), 0 0 40px var(--accent-glow);
+}
+
+/* Typography */
+.text-apex {
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  font-weight: 900;
+  line-height: 0.85;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Navigation */
 nav {
   height: 90px;
-  border-bottom: 1px solid var(--border);
+  background: rgba(5, 5, 5, 0.8);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: white;
+  padding: 0 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 .nav-link {
-  font-weight: 800;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  color: var(--text);
-  text-decoration: none;
-  transition: opacity 0.2s;
-}
-
-.nav-link:hover {
-  opacity: 0.5;
-}
-
-/* Product Cards */
-.product-card {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  text-decoration: none;
-  color: inherit;
-}
-
-.product-image {
-  aspect-ratio: 3/4;
-  background: var(--gray-bg);
-  overflow: hidden;
-  position: relative;
-}
-
-.product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.product-card:hover img {
-  transform: scale(1.05);
-}
-
-/* Typography */
-h1 {
-  font-size: clamp(3rem, 10vw, 8rem);
   font-weight: 900;
-  line-height: 0.9;
-  letter-spacing: -0.04em;
   text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
-.tag-premium {
-  background: black;
+.nav-link:hover, .nav-link.active {
   color: white;
-  padding: 4px 10px;
-  font-size: 0.6rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.5em;
 }
 
 /* Buttons */
-.btn-main {
-  background: black;
-  color: white;
-  padding: 20px 40px;
+.btn-apex {
+  background: white;
+  color: black;
+  padding: 20px 48px;
   font-weight: 900;
   text-transform: uppercase;
   font-size: 0.7rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.3em;
+  border-radius: 100px;
   border: none;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.btn-main:hover {
-  opacity: 0.8;
+.btn-apex:hover {
+  transform: scale(1.05);
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 0 50px var(--accent-glow);
 }
 
-.animate-in {
-  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+/* Animations */
+@keyframes nebula-pulse {
+  0% { transform: scale(1); opacity: 0.1; }
+  50% { transform: scale(1.2); opacity: 0.2; }
+  100% { transform: scale(1); opacity: 0.1; }
+}
+
+.nebula-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  animation: nebula-pulse 10s infinite ease-in-out;
+}
+
+.reveal {
+  animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(40px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.container-apex {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 60px;
 }

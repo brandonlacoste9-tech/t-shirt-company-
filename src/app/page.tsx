@@ -4,107 +4,144 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+const HERO_IMG = '/aura_masterpiece_hero_v3_1777951421477.png';
+
 export default function Home() {
     const [products, setProducts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
-        fetch('/api/products')
-            .then(res => res.json())
-            .then(data => {
-                setProducts(data);
-                setLoading(false);
-            })
-            .catch(() => setLoading(false));
+        const handleScroll = () => setScrolled(window.scrollY > 50);
+        window.addEventListener('scroll', handleScroll);
+        fetch('/api/products').then(res => res.json()).then(setProducts);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return (
-        <div className="min-h-screen bg-white text-black font-sans">
-            {/* Standard Header */}
-            <header className="border-b border-gray-200 bg-white sticky top-0 z-[100]">
-                <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
-                    <Link href="/" className="text-xl font-black tracking-tight">AURA THREADS</Link>
-                    <nav className="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest">
-                        <Link href="/vault" className="hover:text-red-600 transition-colors">The Vault</Link>
-                        <Link href="#" className="hover:text-red-600 transition-colors">Catalog</Link>
-                        <Link href="#" className="hover:text-red-600 transition-colors">Support</Link>
-                    </nav>
-                    <div className="flex items-center space-x-6">
-                        <button className="text-xs font-bold uppercase tracking-widest hover:text-red-600">Cart (0)</button>
+        <main className="min-h-screen bg-[#050505] text-white selection:bg-accent/30">
+            {/* Promo Bar */}
+            <div className="bg-accent text-white text-[0.6rem] font-black uppercase tracking-[0.4em] py-3 text-center fixed top-0 w-full z-[2000]">
+                Aura Apex / Node 2.6 Active / Free Worldwide Shipping Sequence
+            </div>
+
+            {/* Header */}
+            <nav className={`transition-all duration-700 ${scrolled ? 'h-20 bg-black/80' : 'h-[100px] bg-transparent'} pt-8`}>
+                <div className="container-apex flex justify-between items-center h-full">
+                    <Link href="/" className="text-2xl font-black tracking-tighter">AURA<span className="text-accent italic">APEX</span></Link>
+                    <div className="flex gap-12">
+                        <Link href="/vault" className="nav-link">The Vault</Link>
+                        <Link href="#" className="nav-link">Collections</Link>
+                        <Link href="#" className="nav-link">Bag [0]</Link>
                     </div>
                 </div>
-            </header>
+            </nav>
 
-            {/* Standard Hero Banner */}
-            <section className="relative h-[60vh] bg-gray-100 flex items-center justify-center overflow-hidden">
-                <Image 
-                    src="/aura_minimalist_hoodie_white_1777950947179.png" 
-                    alt="Hero" 
-                    fill 
-                    className="object-cover opacity-60"
-                    priority
-                />
-                <div className="relative text-center px-4">
-                    <h1 className="text-4xl md:text-6xl font-black mb-4 uppercase tracking-tighter">New Collection</h1>
-                    <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto">High-fidelity textiles engineered for the modern voyageur. Direct-to-patron manufacturing.</p>
-                    <Link href="/vault" className="inline-block bg-black text-white px-8 py-4 font-bold uppercase text-xs tracking-widest hover:bg-red-600 transition-colors">
-                        Shop The Vault
+            {/* Cinematic Apex Hero */}
+            <section className="relative h-[110vh] flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 z-0 opacity-60">
+                    <Image 
+                        src={HERO_IMG} 
+                        alt="Hero" 
+                        fill 
+                        className="object-cover"
+                        priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]/80"></div>
+                </div>
+
+                <div className="nebula-glow" style={{ top: '20%', left: '10%' }}></div>
+                <div className="nebula-glow" style={{ bottom: '10%', right: '5%', background: 'radial-gradient(circle, #00f2ff 0%, transparent 70%)', opacity: 0.05 }}></div>
+
+                <div className="relative z-10 text-center px-4 max-w-6xl reveal">
+                    <span className="text-[0.65rem] font-black uppercase tracking-[0.6em] text-accent mb-10 block">Imperial Collection v1.0</span>
+                    <h1 className="text-[12rem] text-apex gradient-text mb-12">SOVEREIGN</h1>
+                    <p className="text-sm md:text-lg text-white/40 mb-16 max-w-xl mx-auto font-medium tracking-[0.2em] leading-relaxed uppercase">
+                        High-Fidelity Engineering for the Modern Voyageur. Controlled by the Apex Node.
+                    </p>
+                    <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
+                        <Link href="/vault" className="btn-apex">
+                            Enter The Vault
+                        </Link>
+                        <div className="text-[0.6rem] uppercase tracking-[0.6em] font-black text-white/20 border-l border-white/10 pl-8">
+                            Status: Online / Latency: 4ms
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Featured Apex Catalog */}
+            <section className="relative py-60 container-apex">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-32 border-b border-white/5 pb-10">
+                    <div className="reveal">
+                        <h2 className="text-xs uppercase tracking-[0.5em] text-accent font-black mb-6">Current Sequence</h2>
+                        <h3 className="text-7xl font-black text-apex tracking-tighter uppercase">Essentials</h3>
+                    </div>
+                    <Link href="/vault" className="text-[0.65rem] uppercase tracking-[0.4em] font-black opacity-30 hover:opacity-100 transition-opacity pb-2">
+                        View Complete Engineering →
                     </Link>
                 </div>
-            </section>
 
-            {/* Product Grid */}
-            <section className="max-w-7xl mx-auto px-6 py-20">
-                <div className="flex justify-between items-end mb-10 border-b border-gray-100 pb-4">
-                    <h2 className="text-2xl font-black uppercase tracking-tight">Featured Items</h2>
-                    <Link href="/vault" className="text-[0.6rem] font-bold uppercase tracking-widest border-b border-black pb-0.5 hover:text-red-600 hover:border-red-600 transition-colors">View All</Link>
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10">
+                    {products.length > 0 ? products.map((p: any) => (
+                        <Link key={p.id} href={`/products/${p.handle || p.id}`} className="apex-card group reveal">
+                            <div className="aspect-[4/5] relative overflow-hidden">
+                                <Image 
+                                    src={p.image} 
+                                    alt={p.name} 
+                                    fill 
+                                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="absolute bottom-6 left-6 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0">
+                                    <span className="text-[0.6rem] font-black uppercase tracking-widest bg-white text-black px-4 py-2 rounded-full">Quick Add</span>
+                                </div>
+                            </div>
+                            <div className="p-8 space-y-4">
+                                <div className="flex justify-between items-start">
+                                    <h4 className="text-xl font-black tracking-tighter uppercase group-hover:text-accent transition-colors">{p.name}</h4>
+                                    <span className="text-lg font-black text-accent">${p.price}</span>
+                                </div>
+                                <p className="text-[0.6rem] uppercase tracking-[0.4em] text-white/20 font-black">Blueprint: {p.productCode}</p>
+                            </div>
+                        </Link>
+                    )) : (
+                        <div className="col-span-full h-80 apex-glass rounded-3xl flex items-center justify-center text-white/20 font-black uppercase tracking-[0.5em] text-xs">
+                            Syncing Apex Sales Node...
+                        </div>
+                    )}
                 </div>
-
-                {loading ? (
-                    <div className="h-60 flex items-center justify-center text-gray-300 font-bold uppercase tracking-widest text-xs">Syncing Catalog...</div>
-                ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-                        {products.map((p: any) => (
-                            <Link key={p.id} href={`/vault?product=${p.id}`} className="group flex flex-col gap-4">
-                                <div className="aspect-[3/4] bg-gray-50 relative overflow-hidden rounded-sm">
-                                    <Image 
-                                        src={p.image} 
-                                        alt={p.name} 
-                                        fill 
-                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                    />
-                                </div>
-                                <div className="space-y-1">
-                                    <p className="text-[0.6rem] font-bold text-gray-400 uppercase tracking-widest">{p.brand || 'Aura'}</p>
-                                    <h3 className="text-sm font-bold leading-tight group-hover:underline">{p.name}</h3>
-                                    <p className="text-sm font-black text-red-600">${p.price.toFixed(2)}</p>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                )}
             </section>
 
-            {/* Simple Footer */}
-            <footer className="border-t border-gray-100 bg-white py-16">
-                <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <div className="space-y-4">
-                        <h4 className="text-xs font-black uppercase tracking-widest">Aura Threads</h4>
-                        <p className="text-sm text-gray-500 leading-relaxed">Advanced garment engineering for the sovereign individual. Node v2.6.</p>
+            {/* Apex Footer */}
+            <footer className="py-40 bg-black/40 border-t border-white/5">
+                <div className="container-apex grid grid-cols-1 md:grid-cols-4 gap-20">
+                    <div className="col-span-2 space-y-12">
+                        <div className="text-4xl font-black tracking-tighter">AURA<span className="text-accent italic">APEX</span></div>
+                        <p className="text-sm text-white/30 leading-relaxed font-medium max-w-sm">
+                            The definitive signature in high-fidelity apparel. Engineered for the sovereign individual, fulfilled via the global Apliiq manufacturing sequence.
+                        </p>
                     </div>
-                    <div className="space-y-4">
-                        <h4 className="text-xs font-black uppercase tracking-widest">Support</h4>
-                        <ul className="text-xs font-bold uppercase tracking-widest text-gray-400 space-y-2">
-                            <li><Link href="#" className="hover:text-black">Shipping</Link></li>
-                            <li><Link href="#" className="hover:text-black">Returns</Link></li>
-                            <li><Link href="#" className="hover:text-black">Contact</Link></li>
+                    <div className="space-y-8">
+                        <h4 className="text-[0.6rem] font-black uppercase tracking-[0.5em] text-white/20">Navigation</h4>
+                        <ul className="space-y-4 text-[0.65rem] font-black uppercase tracking-[0.4em] text-white/40">
+                            <li><Link href="/vault" className="hover:text-white">The Vault</Link></li>
+                            <li><Link href="#" className="hover:text-white">Shipping Node</Link></li>
+                            <li><Link href="#" className="hover:text-white">Support</Link></li>
                         </ul>
                     </div>
-                    <div className="flex flex-col justify-end items-end text-gray-200">
-                        <span className="text-4xl font-black select-none">AURA</span>
+                    <div className="space-y-8">
+                        <h4 className="text-[0.6rem] font-black uppercase tracking-[0.5em] text-white/20">Connect</h4>
+                        <ul className="space-y-4 text-[0.65rem] font-black uppercase tracking-[0.4em] text-white/40">
+                            <li><Link href="#" className="hover:text-white">Instagram</Link></li>
+                            <li><Link href="#" className="hover:text-white">Twitter</Link></li>
+                            <li><Link href="#" className="hover:text-white">Discord</Link></li>
+                        </ul>
                     </div>
                 </div>
+                <div className="mt-40 text-center text-[0.5rem] font-black uppercase tracking-[1em] text-white/5">
+                    AURA THREADS CANADA &copy; 2026 / APEX NODE v2.6
+                </div>
             </footer>
-        </div>
+        </main>
     );
 }

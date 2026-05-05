@@ -7,8 +7,8 @@ import Link from 'next/link';
 const brandingOptions = [
     { id: 'none', title: 'None', price: 0, image: null },
     { id: 'woven', title: 'Woven Hem Label', price: 5, image: '/assets/label-detail.png' },
-    { id: 'embroidery', title: 'Embroidery', price: 15, image: '/assets/gold-embroidery.png' },
-    { id: 'neckprint', title: 'Neck Print', price: 4, image: '/assets/neck-print.png' }
+    { id: 'embroidery', title: 'Gold Embroidery', price: 15, image: '/assets/gold-embroidery.png' },
+    { id: 'neckprint', title: 'Silver Neck Print', price: 4, image: '/assets/neck-print.png' }
 ];
 
 export default function DesignerVault() {
@@ -39,63 +39,72 @@ export default function DesignerVault() {
         window.location.href = '/?cart=open';
     };
 
-    if (!selectedProduct) return <div className="min-h-screen bg-white flex items-center justify-center font-black text-xs uppercase tracking-[0.5em] text-gray-200">Synchronizing Laboratory...</div>;
+    if (!selectedProduct) return <div className="min-h-screen bg-[#050505] flex items-center justify-center font-black text-xs uppercase tracking-[0.5em] text-white/10">Syncing Apex Node...</div>;
 
     const totalPrice = selectedProduct.price + activeBranding.price;
 
     return (
-        <main className="min-h-screen bg-white text-black font-sans">
+        <main className="min-h-screen bg-[#050505] text-white selection:bg-accent/30 overflow-hidden">
+            {/* Promo Bar */}
+            <div className="bg-accent text-white text-[0.6rem] font-black uppercase tracking-[0.4em] py-3 text-center fixed top-0 w-full z-[2000]">
+                Aura Apex Laboratory / Node 2.6 / Secure Connection Established
+            </div>
+
             {/* Header */}
-            <header className="h-[90px] border-b border-gray-100 flex justify-between items-center px-12 sticky top-0 bg-white/80 backdrop-blur-xl z-[100]">
-                <Link href="/" className="text-2xl font-black tracking-tighter hover:opacity-50 transition-opacity">AURA</Link>
-                <nav className="flex gap-10 text-[0.7rem] font-black uppercase tracking-widest">
-                    <Link href="/" className="opacity-40 hover:opacity-100 transition-opacity">Return</Link>
-                    <span className="text-black border-b-2 border-black pb-1">Designer Vault</span>
+            <header className="h-[100px] flex justify-between items-center px-16 pt-8 sticky top-0 z-[1000] bg-[#050505]/80 backdrop-blur-2xl border-b border-white/5">
+                <Link href="/" className="text-2xl font-black tracking-tighter hover:opacity-70 transition-opacity">AURA<span className="text-accent">APEX</span></Link>
+                <nav className="flex gap-12 text-[0.65rem] font-black uppercase tracking-[0.4em] items-center">
+                    <Link href="/" className="text-white/30 hover:text-white transition-colors">Return</Link>
+                    <span className="text-accent border-b border-accent pb-1">Vault Engineering</span>
                 </nav>
             </header>
 
-            <div className="container-wide py-24">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-24">
-                    {/* Clinical Preview */}
-                    <div className="lg:col-span-7 bg-gray-50 border border-gray-100 rounded-sm overflow-hidden relative min-h-[700px] flex items-center justify-center group animate-in">
-                        <div className={`relative transition-all duration-1000 ease-in-out ${zoomDetail ? 'scale-[2.5] translate-y-[-10%]' : 'scale-100'}`}>
+            <div className="max-w-[1600px] mx-auto px-16 py-24 reveal">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-24 items-start">
+                    
+                    {/* Laboratory Preview */}
+                    <div className="lg:col-span-7 apex-glass rounded-[40px] overflow-hidden relative min-h-[750px] flex items-center justify-center group">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(138,43,226,0.1),transparent_70%)] opacity-50 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                        
+                        <div className={`relative transition-all duration-1000 cubic-bezier(0.16, 1, 0.3, 1) ${zoomDetail ? 'scale-[2.8] translate-y-[-10%]' : 'scale-100'}`}>
                             <Image 
                                 src={(zoomDetail && activeBranding.image) ? activeBranding.image : selectedProduct.image} 
-                                alt="Garment Preview" 
-                                width={650} 
-                                height={650} 
-                                className="object-contain mix-blend-multiply"
+                                alt="Garment Engineering" 
+                                width={750} 
+                                height={750} 
+                                className="object-contain drop-shadow-[0_40px_100px_rgba(0,0,0,0.9)]"
                                 priority
                             />
                         </div>
+
                         <button 
                             onClick={() => setZoomDetail(!zoomDetail)}
-                            className="absolute bottom-10 left-10 text-[0.65rem] font-black uppercase tracking-[0.3em] border-b-2 border-black pb-1 hover:text-red-600 hover:border-red-600 transition-colors"
+                            className="absolute bottom-12 left-12 bg-white/5 backdrop-blur-2xl border border-white/10 px-10 py-4 rounded-full text-[0.6rem] font-black uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all"
                         >
-                            {zoomDetail ? 'Collapse Detail' : 'Inspect Quality'}
+                            {zoomDetail ? 'Collapse Blueprint' : 'Inspect Craftsmanship'}
                         </button>
                     </div>
 
                     {/* Engineering Controls */}
-                    <div className="lg:col-span-5 space-y-16 py-10 animate-in">
-                        <div>
-                            <h1 className="text-6xl font-black mb-8 tracking-tighter uppercase leading-none">DESIGNER<br/>LABORATORY</h1>
-                            <p className="text-gray-400 text-sm leading-relaxed max-w-sm font-medium">Configure your high-fidelity garment. All branding sequences are fulfilled via the Apliiq manufacturing node.</p>
-                        </div>
+                    <div className="lg:col-span-5 space-y-16 py-10">
+                        <header>
+                            <h1 className="text-7xl font-black text-apex mb-6 tracking-tighter leading-none uppercase">THE VAULT</h1>
+                            <p className="text-white/30 text-sm leading-relaxed max-w-sm font-medium tracking-wide">Secure the node. All garments are sequenced using premium textiles and fulfilled via global Apliiq manufacturing pipelines.</p>
+                        </header>
 
                         {/* Garment Selection */}
-                        <div className="space-y-6">
-                            <h2 className="text-[0.65rem] font-black uppercase tracking-[0.4em] text-gray-200">I. Select Base</h2>
-                            <div className="grid grid-cols-1 gap-3">
+                        <div className="space-y-8">
+                            <h2 className="text-[0.6rem] font-black uppercase tracking-[0.5em] text-white/10 italic">I. Select Base Blueprint</h2>
+                            <div className="grid grid-cols-1 gap-4">
                                 {products.slice(0, 4).map(item => (
                                     <button 
                                         key={item.id}
                                         onClick={() => setSelectedProduct(item)}
-                                        className={`w-full p-6 text-left border rounded-sm transition-all ${selectedProduct.id === item.id ? 'border-black bg-white ring-1 ring-black' : 'border-gray-100 bg-white hover:border-gray-300'}`}
+                                        className={`w-full p-8 text-left apex-card transition-all ${selectedProduct.id === item.id ? 'border-accent bg-accent/5' : 'border-white/5 hover:border-white/20'}`}
                                     >
                                         <div className="flex justify-between items-center">
-                                            <div className="font-black text-sm">{item.name}</div>
-                                            <div className="text-[0.75rem] font-black text-red-600">${item.price}</div>
+                                            <div className="font-black text-sm tracking-tight">{item.name}</div>
+                                            <div className="text-[0.7rem] font-black text-accent">${item.price}</div>
                                         </div>
                                     </button>
                                 ))}
@@ -103,50 +112,51 @@ export default function DesignerVault() {
                         </div>
 
                         {/* Branding Config */}
-                        <div className="space-y-6">
-                            <h2 className="text-[0.65rem] font-black uppercase tracking-[0.4em] text-gray-200">II. Select Sequence</h2>
-                            <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-8">
+                            <h2 className="text-[0.6rem] font-black uppercase tracking-[0.5em] text-white/10 italic">II. Select Sequence</h2>
+                            <div className="grid grid-cols-2 gap-4">
                                 {brandingOptions.map(opt => (
                                     <button 
                                         key={opt.id}
                                         onClick={() => { setActiveBranding(opt); setZoomDetail(opt.id !== 'none'); }}
                                         className={`
-                                            p-6 border rounded-sm text-center transition-all
-                                            ${activeBranding.id === opt.id ? 'border-black bg-black text-white' : 'border-gray-100 bg-white hover:border-gray-300'}
+                                            p-8 apex-card text-center transition-all
+                                            ${activeBranding.id === opt.id ? 'border-accent bg-accent/20' : 'border-white/5 hover:border-white/20'}
                                         `}
                                     >
-                                        <div className="text-[0.75rem] font-black mb-1">{opt.title}</div>
-                                        <div className="text-[0.6rem] font-bold opacity-60">+{opt.price > 0 ? `$${opt.price}` : 'Incl.'}</div>
+                                        <div className="text-[0.7rem] font-black mb-1">{opt.title}</div>
+                                        <div className="text-[0.5rem] text-white/40 tracking-widest">+{opt.price > 0 ? `$${opt.price}` : 'Incl.'}</div>
                                     </button>
                                 ))}
                             </div>
                         </div>
 
                         {/* Order Summary */}
-                        <div className="pt-16 border-t border-gray-100 space-y-10">
+                        <div className="pt-16 border-t border-white/5 space-y-10">
                             <div className="flex justify-between items-end">
                                 <div>
-                                    <h4 className="text-[0.6rem] font-black uppercase tracking-[0.4em] text-gray-200 mb-2">Total Sovereignty</h4>
-                                    <p className="text-5xl font-black tracking-tighter">${totalPrice.toFixed(2)}</p>
+                                    <h4 className="text-[0.5rem] uppercase tracking-[0.5em] text-white/10 mb-2">Total Engineering</h4>
+                                    <p className="text-6xl font-black tracking-tighter text-accent">${totalPrice.toFixed(2)}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-[0.6rem] font-black uppercase tracking-[0.4em] text-gray-200 mb-2">SKU ID</p>
-                                    <p className="font-mono text-[0.65rem] text-gray-300">{selectedProduct.productCode}-AURA-{activeBranding.id.toUpperCase()}</p>
+                                    <p className="text-[0.5rem] uppercase tracking-[0.5em] text-white/10 mb-2">Node SKU</p>
+                                    <p className="font-mono text-[0.6rem] text-white/30">{selectedProduct.productCode}-APEX-{activeBranding.id.toUpperCase()}</p>
                                 </div>
                             </div>
+                            
                             <button 
                                 onClick={addToCart}
-                                className="btn-main w-full py-6 text-sm"
+                                className="w-full btn-apex py-8"
                             >
-                                Initiate Manufacturing
+                                Initiate Manufacturing Run
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <footer className="py-20 text-center text-[0.6rem] text-gray-200 font-black uppercase tracking-[0.8em] border-t border-gray-50 mt-40">
-                AURA THREADS CANADA &copy; 2026 / LAB NODE 2.5
+            <footer className="py-20 text-center opacity-5 text-[0.6rem] uppercase tracking-[1em] font-black italic">
+                Aura Threads Canada / Laboratory Node v2.6
             </footer>
         </main>
     );
