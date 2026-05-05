@@ -1,53 +1,46 @@
 import { NextResponse } from 'next/server';
-import { shopifyFetch, getProductsQuery } from '@/lib/shopify';
+import { getShopifyProducts } from '@/lib/shopify';
 
 export async function GET() {
-    const SHOPIFY_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN;
-    const SHOPIFY_TOKEN = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-
-    // Fallback to Aura Essentials if Shopify is not yet connected
-    if (!SHOPIFY_DOMAIN || !SHOPIFY_TOKEN) {
-        return NextResponse.json([
-            {
-                id: "mock-1",
-                name: "Aura Essentials Hoodie",
-                price: 65.00,
-                image: "/assets/apliiq-hoodie.png",
-                description: "Sync your Shopify store to unlock your full collection.",
-                brand: "Aura Threads",
-                productCode: "3719",
-                variants: ["S", "M", "L", "XL"]
-            }
-        ]);
-    }
-
     try {
-        const response = await shopifyFetch({
-            query: getProductsQuery
-        });
+        // Fetch products using the confirmed Discovery API
+        const response = await getShopifyProducts('t-shirt', 20);
 
-        if (response.status !== 200) {
-            throw new Error('Shopify API Error');
+        const items = response.value;
+
+        if (!items || items.length === 0) {
+            // Return mock data if the Shopify store is currently empty or no search results
+            return NextResponse.json([
+                {
+                    id: "mock-1",
+                    name: "Aura Essentials Hoodie",
+                    price: 65.00,
+                    image: "/assets/apliiq-hoodie.png",
+                    description: "Connection successful, but no products were found in your Shopify store. Add items in Shopify to see them here!",
+                    brand: "Aura Threads",
+                    productCode: "3719",
+                    variants: ["S", "M", "L", "XL"]
+                }
+            ]);
         }
 
-        const products = response.body.data.products.edges.map((edge: any) => {
-            const product = edge.node;
+        const products = items.map((product: any) => {
             return {
                 id: product.id,
                 name: product.title,
-                price: parseFloat(product.priceRange.minVariantPrice.amount),
-                image: product.images.edges[0]?.node.url || '/assets/apliiq-hoodie.png',
+                price: product.priceRange.min.amount / 100, // API returns price in cents (e.g. 699 for $6.99)
+                image: product.media?.[0]?.url || '/assets/apliiq-hoodie.png',
                 description: product.description,
                 brand: 'Aura Threads',
-                sku: product.handle,
+                sku: product.id.split('/').pop(),
                 productCode: product.id.split('/').pop(),
-                variants: product.variants.edges.map((v: any) => v.node.title)
+                variants: product.variants?.map((v: any) => v.displayName) || ["Standard"]
             };
         });
 
         return NextResponse.json(products);
-    } catch (error) {
-        console.error('🔴 Shopify Sync Failed:', error);
-        return NextResponse.json({ error: 'Failed to sync with Shopify' }, { status: 500 });
+    } catch (error: any) {
+        console.error('🔴 Shopify Discovery Failed:', error.message);
+        return NextResponse.json({ error: `Failed to sync with Shopify: ${error.message}` }, { status: 500 });
     }
 }

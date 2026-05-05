@@ -15,13 +15,27 @@ const steps = [
 export default function VoyageTracker() {
     const params = useParams();
     const orderId = params.orderId as string;
-    const [activeStep, setActiveStep] = useState(1);
+    const [activeStep, setActiveStep] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [orderData, setOrderData] = useState<any>(null);
 
-    // Simulate progress for demonstration
     useEffect(() => {
-        const timer = setTimeout(() => setActiveStep(2), 3000);
-        return () => clearTimeout(timer);
-    }, []);
+        if (!orderId) return;
+
+        fetch(`/api/order/${orderId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.activeStep !== undefined) {
+                    setActiveStep(data.activeStep);
+                    setOrderData(data);
+                }
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Tracking fetch error:', err);
+                setLoading(false);
+            });
+    }, [orderId]);
 
     return (
         <main className="min-h-screen bg-[#050507] text-white p-10 font-['Outfit'] overflow-hidden relative">
@@ -79,17 +93,17 @@ export default function VoyageTracker() {
                 <div className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-xl">
                         <h4 className="text-[0.6rem] uppercase tracking-widest text-white/40 mb-4">Location</h4>
-                        <p className="font-bold">Apliiq Factory Floor</p>
-                        <p className="text-sm text-white/60">Los Angeles, CA</p>
+                        <p className="font-bold">{orderData?.details?.location || 'Apliiq Factory Floor'}</p>
+                        <p className="text-sm text-white/60">{orderData?.details?.city || 'Los Angeles, CA'}</p>
                     </div>
                     <div className="bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-xl">
                         <h4 className="text-[0.6rem] uppercase tracking-widest text-white/40 mb-4">Service Level</h4>
-                        <p className="font-bold">Priority Production</p>
-                        <p className="text-sm text-white/60">Bespoke Branding Active</p>
+                        <p className="font-bold">{orderData?.details?.serviceLevel || 'Priority Production'}</p>
+                        <p className="text-sm text-white/60">{orderData?.details?.branding ? `${orderData.details.branding} Active` : 'Bespoke Branding Active'}</p>
                     </div>
                     <div className="bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-xl">
                         <h4 className="text-[0.6rem] uppercase tracking-widest text-white/40 mb-4">Estimated Arrival</h4>
-                        <p className="font-bold">May 14 - May 16</p>
+                        <p className="font-bold">{orderData?.details?.arrival || 'May 14 - May 16'}</p>
                         <p className="text-sm text-white/60">International Express</p>
                     </div>
                 </div>

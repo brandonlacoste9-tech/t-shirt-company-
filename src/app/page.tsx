@@ -67,6 +67,16 @@ export default function Home() {
         const handleScroll = () => setScrolled(window.scrollY > 50);
         window.addEventListener('scroll', handleScroll);
         
+        // Sync cart from localStorage
+        const savedCart = localStorage.getItem('aura-cart');
+        if (savedCart) setCart(JSON.parse(savedCart));
+
+        // Detect "open cart" signal
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('cart') === 'open') {
+            setIsCartOpen(true);
+        }
+
         // Dynamic Catalog Fetch
         fetch('/api/products')
             .then(res => res.json())
@@ -75,6 +85,11 @@ export default function Home() {
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Persist cart changes
+    useEffect(() => {
+        localStorage.setItem('aura-cart', JSON.stringify(cart));
+    }, [cart]);
 
     const addToCart = (productId: string) => {
         const product = products.find(p => p.id === productId);
@@ -158,6 +173,7 @@ export default function Home() {
                         <li><a href="#story">Story</a></li>
                         <li><a href="#collection">Collection</a></li>
                         <li><Link href="/vault" className="text-secondary font-bold">Vault</Link></li>
+                        <li><Link href="/swarm" className="opacity-50 hover:opacity-100 transition-all">Swarm</Link></li>
                     </ul>
                     <div className="nav-actions">
                         <div className="lang-toggle">

@@ -5,11 +5,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/data/products';
 
+const tiers = ['Explorer', 'Navigator', 'Captain', 'Admiral'];
+
 const brandingOptions = [
-    { id: 'none', title: 'None', price: 0, image: null },
-    { id: 'woven', title: 'Woven Hem Label', price: 5, image: '/assets/label-detail.png' },
-    { id: 'embroidery', title: 'Gold Embroidery', price: 15, image: '/assets/gold-embroidery.png' },
-    { id: 'neckprint', title: 'Silver Neck Print', price: 4, image: '/assets/neck-print.png' }
+    { id: 'none', title: 'None', price: 0, image: null, minTier: 'Explorer' },
+    { id: 'woven', title: 'Woven Hem Label', price: 5, image: '/assets/label-detail.png', minTier: 'Explorer' },
+    { id: 'embroidery', title: 'Gold Embroidery', price: 15, image: '/assets/gold-embroidery.png', minTier: 'Navigator' },
+    { id: 'neckprint', title: 'Silver Neck Print', price: 4, image: '/assets/neck-print.png', minTier: 'Explorer' },
+    { id: 'black-gold', title: 'Black-Label: Gold-Stitched', price: 45, image: '/assets/black-label-gold.png', minTier: 'Admiral' },
+    { id: 'black-leather', title: 'Black-Label: Obsidian Leather', price: 65, image: '/assets/black-label-leather.png', minTier: 'Admiral' }
 ];
 
 export default function DesignerVault() {
@@ -17,6 +21,67 @@ export default function DesignerVault() {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [activeBranding, setActiveBranding] = useState(brandingOptions[1]);
     const [zoomDetail, setZoomDetail] = useState(false);
+    const [cart, setCart] = useState<any[]>([]);
+    const [userTier, setUserTier] = useState('Explorer');
+
+    useEffect(() => {
+        const token = localStorage.getItem('swarm-token');
+        if (token) {
+            fetch('/api/auth/swarm/me', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.customer) {
+                    const totalSpent = data.customer.orders.edges.reduce((sum: number, e: any) => sum + parseFloat(e.node.totalPrice.amount), 0);
+                    if (totalSpent >= 5000) setUserTier('Admiral');
+                    else if (totalSpent >= 1500) setUserTier('Captain');
+                    else if (totalSpent >= 500) setUserTier('Navigator');
+                }
+            });
+        }
+    }, []);
+
+    const addToCart = () => {
+        if (!selectedProduct) return;
+        
+        const cartItem = {
+            ...selectedProduct,
+            cartItemId: `${selectedProduct.id}-${activeBranding.id}`,
+            size: 'L', 
+            branding: activeBranding.id,
+            quantity: 1,
+            price: selectedProduct.price + activeBranding.price
+        };
+
+        const newCart = [...cart, cartItem];
+        setCart(newCart);
+        localStorage.setItem('aura-cart', JSON.stringify(newCart));
+        window.location.href = '/?cart=open';
+    };
+
+    const saveBlueprint = async () => {
+        if (!selectedProduct) return;
+        const token = localStorage.getItem('swarm-token');
+        if (!token) return alert('Please join the Swarm to save DNA Blueprints.');
+
+        const blueprint = {
+            name: `${selectedProduct.name} - ${activeBranding.title}`,
+            garment: selectedProduct.name,
+            branding: activeBranding.id
+        };
+
+        const res = await fetch('/api/auth/swarm/blueprints', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ blueprint })
+        });
+
+        if (res.ok) alert('DNA Blueprint Archived to the Swarm.');
+    };
 
     useEffect(() => {
         fetch('/api/products')
@@ -38,10 +103,11 @@ export default function DesignerVault() {
                 <div className="flex gap-8 items-center text-sm font-bold uppercase tracking-widest">
                     <Link href="/" className="opacity-50 hover:opacity-100 transition-opacity">Store</Link>
                     <span className="text-primary">Vault</span>
+                    <Link href="/swarm" className="opacity-50 hover:opacity-100 transition-opacity ml-4">Swarm</Link>
                 </div>
             </nav>
 
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto animate-obsidian-open">
                 <header className="mb-16">
                     <h1 className="text-6xl font-extrabold mb-4">Designer <span className="gradient-text">Vault</span></h1>
                     <p className="text-white/40 max-w-xl text-lg">Engineer your garment. Preview the "Imperial" branding services of the Apliiq manufacturing floor in real-time.</p>
@@ -103,16 +169,30 @@ export default function DesignerVault() {
                         <div className="space-y-6">
                             <h3 className="text-xs uppercase tracking-widest font-bold text-white/40">2. Branding Service</h3>
                             <div className="grid grid-cols-2 gap-3">
-                                {brandingOptions.map(opt => (
-                                    <button 
-                                        key={opt.id}
-                                        onClick={() => { setActiveBranding(opt); setZoomDetail(opt.id !== 'none'); }}
-                                        className={`p-4 rounded-2xl border text-center transition-all ${activeBranding.id === opt.id ? 'bg-secondary/10 border-secondary text-white' : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10'}`}
-                                    >
-                                        <div className="text-sm font-bold">{opt.title}</div>
-                                        <div className="text-[0.6rem] opacity-50">+{opt.price > 0 ? `$${opt.price}` : 'Incl.'}</div>
-                                    </button>
-                                ))}
+                                {brandingOptions.map(opt => {
+                                    const isLocked = tiers.indexOf(opt.minTier) > tiers.indexOf(userTier);
+                                    return (
+                                        <button 
+                                            key={opt.id}
+                                            disabled={isLocked}
+                                            onClick={() => { setActiveBranding(opt); setZoomDetail(opt.id !== 'none'); }}
+                                            className={`p-4 rounded-2xl border text-center transition-all relative group/btn ${activeBranding.id === opt.id ? (opt.id.includes('black') ? 'animate-gold-trace border-secondary text-white' : 'bg-secondary/10 border-secondary text-white') : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10'} ${isLocked ? 'cursor-not-allowed opacity-50 grayscale' : ''}`}
+                                        >
+                                            <div className="text-sm font-bold flex items-center justify-center gap-2">
+                                                {opt.title}
+                                                {isLocked && <span>🔒</span>}
+                                            </div>
+                                            <div className="text-[0.6rem] opacity-50">
+                                                {isLocked ? `Requires ${opt.minTier}` : `+${opt.price > 0 ? `$${opt.price}` : 'Incl.'}`}
+                                            </div>
+                                            {isLocked && (
+                                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/btn:opacity-100 transition-opacity flex items-center justify-center rounded-2xl p-4">
+                                                    <p className="text-[0.5rem] leading-tight uppercase font-bold tracking-tighter">Increase your Command Status to unlock Black-Label exclusivity.</p>
+                                                </div>
+                                            )}
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -127,8 +207,17 @@ export default function DesignerVault() {
                                     <p className="font-mono text-xs">{selectedProduct.productCode}-AURA-{activeBranding.id.toUpperCase()}</p>
                                 </div>
                             </div>
-                            <button className="w-full bg-primary py-5 rounded-3xl font-bold text-lg hover:brightness-110 shadow-lg shadow-primary/20 transition-all">
+                            <button 
+                                onClick={addToCart}
+                                className="w-full bg-primary py-5 rounded-3xl font-bold text-lg hover:brightness-110 shadow-lg shadow-primary/20 transition-all mb-4"
+                            >
                                 Add Custom to Bag
+                            </button>
+                            <button 
+                                onClick={saveBlueprint}
+                                className="w-full border border-white/10 py-4 rounded-3xl font-bold text-sm hover:bg-white/5 transition-all text-white/40 flex items-center justify-center gap-2"
+                            >
+                                🧬 Save DNA Blueprint
                             </button>
                         </div>
                     </div>
