@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
 :root {
   --primary: #8a2be2;
   --secondary: #d4af37;
@@ -6,8 +8,6 @@
   --glass: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.08);
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 * {
   margin: 0;
