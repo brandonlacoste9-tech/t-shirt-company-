@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
     request: Request,
-    { params }: { params: { orderId: string } }
+    { params }: { params: Promise<{ orderId: string }> }
 ) {
-    const { orderId } = params;
+    const { orderId } = await params;
     const adminToken = process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN;
     const domain = process.env.SHOPIFY_STORE_DOMAIN || 'printifull-ca.myshopify.com';
 
