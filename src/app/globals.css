@@ -1,139 +1,107 @@
 :root {
-  --primary: #f00000; /* Uniqlo-inspired Red */
-  --bg-white: #ffffff;
-  --text-main: #1b1b1b;
-  --text-muted: #767676;
-  --border-light: #e5e5e5;
-  --bg-gray: #f4f4f4;
+  --primary: #8a2be2;
+  --secondary: #d4af37;
+  --accent: #00f2ff;
+  --bg-deep: #050508;
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
 }
 
 body {
-  background-color: var(--bg-white);
-  color: var(--text-main);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-deep);
+  color: white;
+  font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
+  cursor: crosshair;
 }
 
-/* Minimalist Utilities */
-.container-clean {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 20px;
+/* Custom Aura cursor glow */
+.aura-glow {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(138, 43, 226, 0.08) 0%, transparent 70%);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
 }
 
-.btn-uniqlo {
-  background: var(--text-main);
-  color: white;
-  padding: 12px 32px;
-  font-weight: 700;
+/* Premium Card Architecture */
+.obsidian-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(24px);
+  border-radius: 40px;
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+}
+
+.obsidian-card:hover {
+  transform: translateY(-10px) scale(1.01);
+  border-color: var(--secondary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Typography Enhancements */
+.text-imperial {
+  letter-spacing: -0.05em;
+  line-height: 0.85;
   text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
-  transition: opacity 0.2s;
-  border: none;
-  cursor: pointer;
 }
 
-.btn-uniqlo:hover {
-  opacity: 0.8;
+.gradient-aura {
+  background: linear-gradient(135deg, #fff 30%, var(--secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.btn-uniqlo-outline {
-  background: transparent;
-  border: 1px solid var(--text-main);
-  color: var(--text-main);
-  padding: 12px 32px;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  transition: all 0.2s;
-}
-
-.btn-uniqlo-outline:hover {
-  background: var(--text-main);
-  color: white;
-}
-
-/* Grid System */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 30px;
-}
-
-@media (min-width: 640px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (min-width: 1024px) {
-  .product-grid { grid-template-columns: repeat(4, 1fr); }
-}
-
-/* Product Card */
-.product-card-clean {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  text-decoration: none;
-  color: inherit;
-}
-
-.product-image-container {
-  aspect-ratio: 3/4;
-  background: var(--bg-gray);
-  overflow: hidden;
+/* Buttons */
+.btn-sovereign {
   position: relative;
-}
-
-.product-image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.product-card-clean:hover img {
-  transform: scale(1.05);
-}
-
-.product-info-clean {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.product-category-clean {
-  font-size: 0.7rem;
-  color: var(--text-muted);
+  padding: 20px 48px;
+  background: white;
+  color: black;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  border-radius: 100px;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
 }
 
-.product-name-clean {
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1.2;
+.btn-sovereign:hover {
+  transform: scale(1.05);
+  background: var(--secondary);
+  color: white;
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
 }
 
-.product-price-clean {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--primary);
+/* Animations */
+@keyframes nebula-float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-2%, 2%) scale(1.05); }
+  100% { transform: translate(0, 0) scale(1); }
 }
 
-/* Global Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.animate-nebula {
+  animation: nebula-float 20s infinite ease-in-out;
 }
 
-.animate-fade {
-  animation: fadeIn 0.6s ease-out forwards;
+@keyframes content-reveal {
+  from { opacity: 0; clip-path: inset(100% 0 0 0); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+.animate-reveal {
+  animation: content-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
