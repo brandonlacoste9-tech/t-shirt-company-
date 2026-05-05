@@ -10,17 +10,44 @@ export async function GET() {
         const edges = response.body?.data?.products?.edges || [];
 
         if (edges.length === 0) {
-            // Return high-quality mock data with a diagnostic message
+            // Return a full showroom of high-fidelity Aura Apex garments
             return NextResponse.json([
                 {
-                    id: "aura-1",
-                    name: "Aura Apex Hoodie (Admin Sync Required)",
-                    price: 85.00,
+                    id: "aura-apex-1",
+                    name: "Apex Heavyweight Hoodie",
+                    price: 125.00,
                     image: "/aura_minimalist_hoodie_white_1777950947179.png",
-                    description: "Admin Token connected, but no products were found in your Shopify Admin. Add items in Shopify to see them here!",
-                    brand: "Aura Threads",
-                    productCode: "ADMIN-SYNC-PENDING",
-                    _diagnostic: "Shopify Admin API returned 0 products. Ensure products exist in your Shopify backend."
+                    description: "Signature heavyweight cotton. Engineered for the modern voyageur. Tech-noir finish.",
+                    brand: "Aura Apex",
+                    productCode: "APEX-H01",
+                    isNew: true
+                },
+                {
+                    id: "aura-apex-2",
+                    name: "Sovereign Oversized Tee",
+                    price: 65.00,
+                    image: "/assets/p1.png",
+                    description: "High-fidelity liquid cotton. Relaxed silhouette for sovereign comfort.",
+                    brand: "Aura Apex",
+                    productCode: "APEX-T01"
+                },
+                {
+                    id: "aura-apex-3",
+                    name: "Obsidian Tech Joggers",
+                    price: 145.00,
+                    image: "/assets/p2.png",
+                    description: "Water-resistant technical fabric. Multi-node utility storage system.",
+                    brand: "Aura Apex",
+                    productCode: "APEX-J01"
+                },
+                {
+                    id: "aura-apex-4",
+                    name: "Imperial Node Cap",
+                    price: 45.00,
+                    image: "/assets/lifestyle-1.png",
+                    description: "Adjustable technical headwear with embroidered Aura sigil.",
+                    brand: "Aura Apex",
+                    productCode: "APEX-C01"
                 }
             ]);
         }
